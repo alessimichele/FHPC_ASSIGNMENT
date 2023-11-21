@@ -6,6 +6,8 @@
 #include <mpi.h>
 #include <omp.h>
 
+#include "ordered_update.h"
+
 void ordered_update(unsigned char* grid, int k, int n_steps, int s){
     /*
     evolve the current state of the game of life grid for n_steps using the ordered 
