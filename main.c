@@ -6,6 +6,7 @@
 
 
 #include "io_init.h"
+#include "ordered_update.h"
 
 #define INIT 1
 #define RUN  2
@@ -21,6 +22,7 @@ int   e      = ORDERED;
 int   n      = 10000;
 int   s      = 1;
 char *fname  = NULL;
+int maxval = 65535;
 
 int main ( int argc, char **argv )
 {
@@ -72,19 +74,18 @@ int main ( int argc, char **argv )
       // initialize the image
       init_serial(fname, k);
     }
-    
+  else if ( action == RUN )
+    {
+      char *grid = (char*)malloc(k*k*sizeof(char));
+      void *grid_ptr = (void *)grid;
+      read_pgm_image(&grid_ptr, &maxval, &k, &k, fname);
+      
+      printf("running\n");
+      // run the simulation
+      ordered_update(grid, k, n, s);
+    }
 
 
-
-
-
-
-/*
- // Where the initial matrices are stored 
-  char *file_path = (char*)malloc( sizeof(optarg)+ 1 +30);
-  strcpy(file_path,"files/init/");
-  strcat(file_path,fname);
-*/
  
 free(fname);
   return 0;

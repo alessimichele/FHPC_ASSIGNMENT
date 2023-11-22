@@ -3,25 +3,25 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
-#include <mpi.h>
 #include <omp.h>
 
 #include "ordered_update.h"
+#include "io_init.h"
 
-void ordered_update(unsigned char* grid, int k, int n_steps, int s){
+void ordered_update(unsigned char* grid, int k, int n, int s){
     /*
-    evolve the current state of the game of life grid for n_steps using the ordered 
+    evolve the current state of the game of life grid for n using the ordered 
     update algorithm. The grid has size k x k.
     Parameters
     ----------
     grid: pointer to unsigned char, the grid, which is a 1D array, where 
         grid[i*k+j] is the state of the cell in row i and column j
     k: int, size of the grid
-    n_steps: int, number of steps to evolve the grid
+    n: int, number of steps to evolve the grid
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
-    for (int step = 0; step < n_steps; step++)
+    for (int step = 0; step < n; step++)
     {   
         for (int i = 0; i < k; i++) // Loop over all rows
         { 
@@ -42,15 +42,16 @@ void ordered_update(unsigned char* grid, int k, int n_steps, int s){
                 // Update cell, if it is alive and has less than 2 or more than 3 neighbours, it dies; if it is dead and has 2 or 3 neighbours, it becomes alive
                 grid[i*k+j] = (n_neigh_255 > 765 || n_neigh_255 < 510) ? 0 : 255;
             }
-        if ((current_step+1) % s == 0)
-        {
-            char path[45] = "images/evolve_ordered/";
-            char name[20];
-            snprintf(name, 20, "snapshot_%05d.pgm", current_step+1);
-            strcat(path, name);
-            //DA RIVEDERE QUANDO AVREMO SCRITTO LA FUNZIONE write_pgm_parallel
-            write_pgm_parallel(grid, 255, k, k, path, 0, 1, k);
-            
         }
+    
+
+            if((step+1) % s == 0){
+                char *f = (char*)malloc( 700);
+                sprintf(f, "files/ordered/snapshot_%05d.pgm", step+1 );
+                void *grid_ptr = (void *)grid;
+                write_pgm_image(grid_ptr, 255, k, k, f);
+                free(f);
+                free(grid_ptr);
+                }
     }
 }

@@ -3,7 +3,7 @@ CC = gcc
 INCDIR=src
 OBJDIR=src
 
-OBJECTS= main.o $(OBJDIR)/io_init.o
+OBJECTS= main.o $(OBJDIR)/io_init.o $(OBJDIR)/ordered_update.o 
 CFLAGS = -c -I$(INCDIR) 
 
 main.x: $(OBJECTS)

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h> 
+
 #include "io_init.h"
 
 #define XWIDTH 256
@@ -136,7 +137,7 @@ void init_serial(const char *file_name, int k){
   srand(0);
 
   // probability to generate a 0 or a 1
-  double p = 0.2;
+  double p = 0.35;
   // fill the grid with random values: 0 or 255
   for (int i=0; i<k*k; i++){
     grid[i] = (rand() < p * RAND_MAX) ? 0 : 255;

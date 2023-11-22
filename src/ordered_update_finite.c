@@ -8,16 +8,16 @@
 
 #include "ordered_update_finite.h"
 
-void ordered_update_finite(unsigned char* grid, int k, int n_steps, int s, int ){
+void ordered_update_finite(unsigned char* grid, int k, int n, int s, int ){
     /*
-    evolve the current state of the game of life grid for n_steps using the ordered 
+    evolve the current state of the game of life grid for n using the ordered 
     update algorithm. The grid has size k x k.
     Parameters
     ----------
     grid: pointer to unsigned char, the grid, which is a 1D array, where 
         grid[i*k+j] is the state of the cell in row i and column j
     k: int, size of the grid
-    n_steps: int, number of steps to evolve the grid
+    n: int, number of steps to evolve the grid
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
@@ -42,7 +42,7 @@ void ordered_update_finite(unsigned char* grid, int k, int n_steps, int s, int )
         {
             rows_for_me++; //total number of rows to be updated by each thread
         }
-        for (int step = 0; step < n_steps; step++)
+        for (int step = 0; step < n; step++)
         {   for (int line = 0; line < rows_for_me, line++)
             {   
                 int my_current_row = my_id + n_threads * line; //my_id is the rest of the division of k by n_threads
