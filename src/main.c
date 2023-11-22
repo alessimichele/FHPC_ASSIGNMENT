@@ -17,9 +17,6 @@
 #define ORDERED 0
 #define STATIC  1
 
-
-
-
 int   action = 0;
 int   k      = K_DFLT;
 int   e      = ORDERED;
@@ -64,43 +61,33 @@ int main ( int argc, char **argv )
     }
   }
 
-  // Where the initial matrices are stored 
-  char *file_path = (char*)malloc( sizeof(optarg)+ 1 +30);
-  strcpy(file_path,"files/init/");
-  strcat(file_path,fname);
+  if ( fname == NULL )
+    {
+      fname = (char*)malloc( 30 );
+      sprintf(fname, "files/init/initial_gird.pgm");
+    }
 
-
-
-
-
-
-
-
-
-
-  
-
-    if ( fname != NULL )
-      free ( fname );
-
-    if ( action == INIT )
-      {
-        printf("initializing\n");
-        // initialize the image
-        // initialize the image
-        char *image;
-        int xsize, ysize, maxval;
-        char *image_name = fname_deflt;
-        if ( fname != NULL )
-          image_name = fname;
-        read_pgm_image( image_name, &image, &xsize, &ysize, &maxval );
-        initialize_image( image, xsize, ysize, maxval );
-        write_pgm_file( "initial.pgm", image, xsize, ysize, maxval );
-        free( image );
-      }
-
+  //if -i is called, initialize the grid
+  if ( action == INIT )
+    {
+      printf("initializing\n");
+      // initialize the image
+      init_serial(fname, k);
+    }
     
 
 
+
+
+
+
+/*
+ // Where the initial matrices are stored 
+  char *file_path = (char*)malloc( sizeof(optarg)+ 1 +30);
+  strcpy(file_path,"files/init/");
+  strcat(file_path,fname);
+*/
+ 
+free(fname);
   return 0;
 }
