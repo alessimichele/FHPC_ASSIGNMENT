@@ -146,7 +146,7 @@ void init_serial(const char *file_name, int k){
 
   free(grid);
 
-  return 0;
+  return;
 }
 
 
