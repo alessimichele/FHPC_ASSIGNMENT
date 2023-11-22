@@ -3,10 +3,8 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
-#include <mpi.h>
-#include <omp.h>
 
-#include "static_update.h"
+
 #include "io_init.h"
 
 #define INIT 1

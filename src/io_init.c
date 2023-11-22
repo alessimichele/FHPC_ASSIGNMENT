@@ -1,10 +1,9 @@
 // input-output file and initialization
 
-
-
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h> 
-
+#include "io_init.h"
 
 #define XWIDTH 256
 #define YWIDTH 256
