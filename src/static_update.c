@@ -7,6 +7,7 @@
 #include <omp.h>
 
 #include "static_update.h"
+#include "io_init.h"
 
 // current: pointer to the current grid
 // next: pointer to the next grid

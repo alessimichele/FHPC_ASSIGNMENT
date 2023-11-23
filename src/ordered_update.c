@@ -1,10 +1,6 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
-#include <time.h>
-#include <omp.h>
-
 #include "ordered_update.h"
 #include "io_init.h"
 
@@ -21,6 +17,8 @@ void ordered_update(unsigned char* grid, int k, int n, int s){
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
+
+
     for (int step = 0; step < n; step++)
     {   
         for (int i = 0; i < k; i++) // Loop over all rows
@@ -44,14 +42,82 @@ void ordered_update(unsigned char* grid, int k, int n, int s){
             }
         }
     
-
+/*
             if((step+1) % s == 0){
-                char *f = (char*)malloc( 700);
+                char *f = (char*)malloc(60);
                 sprintf(f, "files/ordered/snapshot_%05d.pgm", step+1 );
                 void *grid_ptr = (void *)grid;
                 write_pgm_image(grid_ptr, 255, k, k, f);
                 free(f);
-                free(grid_ptr);
                 }
+            
+
+            if((step+1) % s == 0){
+                char f[60];
+                sprintf(f, "files/ordered/snapshot_%05d.pgm", step+1 );
+                write_pgm_image((void *)grid, 255, k, k, f);
+            }
+        
+
+            if((step+1) % s == 0){
+                char *snapname = malloc(31*sizeof(char));
+                sprintf(snapname, "files/ordered/snapshot_%05d.pgm", step+1 );
+                write_pgm_image((void *)grid, 255, k, k, snapname);
+                free(snapname);
+            }
+                
+
+            if((step+1) % s == 0){
+                char file_path[45] = "images/evolve_ordered/"; // Sufficiently large
+                char filename[20];
+                
+                snprintf(filename, 20, "snapshot_%05d.pgm", step+1);
+                strcat(file_path, filename);
+                write_pgm_image( grid, 255, k, k,  file_path);
+            }
+ */
+        
+
+            if((step+1)%s==0){
+                printf("now  i'm going to write the file\n");
+
+/*
+                char *path = (char*)malloc(21*sizeof(char) + 1);
+                strcpy(path, "files/evolve_ordered/");
+                printf("path: %s\n", path);
+
+                char *file_path = (char*)malloc((strlen(path) + 20)*sizeof(char) + 1);
+                strcpy(file_path, path);
+                */
+
+               
+                   char *file_path = (char*)malloc(32*sizeof(char) + 1);
+                    strcpy(file_path, "files/ordered/");
+
+                char *fname = (char*)malloc(20*sizeof(char) + 1);
+                snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
+                printf("fname: %s\n", fname);
+
+            
+                strcat(file_path, fname);
+                // print the file path
+                printf("file path: %s\n", file_path);
+                printf("address of file_path: %p\n", file_path);
+
+                // from the address of file_path, access it and iterate scanning the memory and reading the content
+                // of the memory cells
+                for (int i = 0; i < 39; i++){ 
+
+                   //printf("file_path[%d]: %c\n", i, file_path[i]);
+                }
+
+                write_pgm_image((void *)grid, 255, k, k, file_path);
+
+                free(fname);
+                free(file_path);
+                
+            
+            }
+            
     }
 }

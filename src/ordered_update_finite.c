@@ -7,6 +7,7 @@
 #include <omp.h>
 
 #include "ordered_update_finite.h"
+#include "io_init.h"
 
 void ordered_update_finite(unsigned char* grid, int k, int n, int s, int ){
     /*
