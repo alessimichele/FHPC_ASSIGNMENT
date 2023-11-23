@@ -69,25 +69,30 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
             
             if (idxs==NULL){
                 // go to next iteration of the outer outer loop (the one with step)
+                printf("idxs is NULL\n");
                 continue;
             }
             // questo for itera sulle celle del quadrato
             for (int ii=0; ii<tmp1;ii++){
                 int sum;
-                
-                int prev_col = (idxs[ii] -1)%(k*k);
-                int next_col = (idxs[ii] +1)%(k*k);
-                
-                sum = grid[prev_col]+
-                grid[(prev_col + k)%(k*k)] + 
-                grid[(prev_col -k)%(k*k)] +
-                grid[(idxs[ii] - k)%(k*k)] + 
-                grid[(idxs[ii] + k)%(k*k)] + 
-                grid[(next_col - k)%(k*k)] +
-                grid[(next_col + k)%(k*k)] +
+                printf("check 1\n");
+                int prev_col = (idxs[ii] -1+(k*k))%(k*k);
+                int next_col = (idxs[ii] +1+(k*k))%(k*k);
+                printf("prev_col: %d\n", prev_col);
+                printf("next_col: %d\n", next_col);
+                printf("check 2\n");
+                sum = grid[prev_col]+grid[(prev_col + k+(k*k))%(k*k)];
+                printf("%d\n", (prev_col -k+(k*k))%(k*k));
+                sum +=  grid[(prev_col -k+(k*k))%(k*k)];
+                printf("check 3\n");
+                sum += grid[(idxs[ii] - k+(k*k))%(k*k)] + 
+                grid[(idxs[ii] + k+(k*k))%(k*k)] + 
+                grid[(next_col - k+(k*k))%(k*k)] +
+                grid[(next_col + k+(k*k))%(k*k)] +
                 grid[next_col];
-               
+                printf("check 4\n");
                 next[idxs[ii]] = (sum > 765 || sum < 510) ? 0 : 255;  // salvo  per ogni cella del quadrato il suo next state
+                printf("cell %d processed\n", ii);
                 } // end of iteration over cells in the given square
                
                 // sostituisco gli stati aggiornati delle celle del quadrato nella griglia
@@ -95,10 +100,13 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                     grid[idxs[ii]] = next[idxs[ii]];
                 }
                 free(idxs);
+                
         } // end of iteration over radius
+        printf("step %d completed\n", step);
 
         // FLAG
         if (k%2==0){
+            printf("entered flag\n");
             int row = (rand_cell_idx + k/2)%k;
             int col = (rand_cell_idx + k/2)%k - row*k;
             // update last row and col
@@ -154,10 +162,9 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
             }   
         } // end of the flag
 
-/*
+
         if((step+1)%s==0){
                 printf("now  i'm going to write the file\n");
-
                
                 char *file_path = (char*)malloc(30*sizeof(char) + 1);
                 strcpy(file_path, "files/wave/");
@@ -176,7 +183,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                 free(fname);
                 free(file_path);
             }
-            */
+            
     
     }
 
