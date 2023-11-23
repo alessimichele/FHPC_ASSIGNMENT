@@ -22,11 +22,11 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
-    int n_threads = 1   
+    int n_threads = 1;
     unsigned char* flag = (unsigned char*)malloc(k*k*sizeof(unsigned char));
     #pragma omp parallel
     {   
-        my_id = omp_get_thread_num();
+        int my_id = omp_get_thread_num();
         #pragma omp master{
             int n_threads = omp_get_num_threads();
             if (n_threads > k)
@@ -45,11 +45,11 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
         }
         for (int step = 0; step < n; step++)
         {   for (int line = 0; line < rows_for_me, line++)
-            {   
+            {   int n_neigh_255;
                 int my_current_row = my_id + n_threads * line; //my_id is the rest of the division of k by n_threads
                 if (my_current_row==0)//first row, different update since grid is not infinite
                 {    //first cell
-                    int n_neigh_255 = grid[1] + grid[k] + grid[k+1];
+                    n_neigh_255 = grid[1] + grid[k] + grid[k+1];
                     grid[0] = (n_neigh_255 > 765 || n_neigh_255 < 510) ? 0 : 255;
                     flag[0] = 1;
                     //middle cells
@@ -110,7 +110,7 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
                                       grid[(my_current_row+1)*k+j-1] +
                                       grid[(my_current_row+1)*k+j] +
                                       grid[(my_current_row+1)*k+j+1];
-                        grid[i*k+j] = (n_neigh_255 > 765 || n_neigh_255 < 510) ? 0 : 255;
+                        grid[my_current_row*k+j] = (n_neigh_255 > 765 || n_neigh_255 < 510) ? 0 : 255;
                         flag[my_current_row*k+j] = 1;
                     }
                     //no need for while for the last cell of the row
@@ -125,30 +125,31 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
             }
             #pragma omp barrier
             #pragma omp master{
-                if((step+1)%s==0){
-                printf("now  i'm going to write the file\n");
+                if((step+1)%s==0)
+                {
+                    printf("now  i'm going to write the file\n");
 
-               
-                char *file_path = (char*)malloc(32*sizeof(char) + 1);
-                strcpy(file_path, "files/ordered_finite/");
 
-                char *fname = (char*)malloc(20*sizeof(char) + 1);
-                snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                printf("fname: %s\n", fname);
+                    char *file_path = (char*)malloc(32*sizeof(char) + 1);
+                    strcpy(file_path, "files/ordered_finite/");
+
+                    char *fname = (char*)malloc(20*sizeof(char) + 1);
+                    snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
+                    printf("fname: %s\n", fname);
+
+
+                    strcat(file_path, fname);
+                    // print the file path
+                    printf("file path: %s\n", file_path);
+                    printf("address of file_path: %p\n", file_path);
+
+                    write_pgm_image((void *)grid, 255, k, k, file_path);
+
+                    free(fname);
+                    free(file_path);
 
             
-                strcat(file_path, fname);
-                // print the file path
-                printf("file path: %s\n", file_path);
-                printf("address of file_path: %p\n", file_path);
-
-                write_pgm_image((void *)grid, 255, k, k, file_path);
-
-                free(fname);
-                free(file_path);
-                
-            
-            }
+                }
             }
         }
     }
