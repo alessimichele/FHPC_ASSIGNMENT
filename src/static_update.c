@@ -9,7 +9,7 @@
 #include "static_update.h"
 #include "io_init.h"
 
-// current: pointer to the current grid
+// grid: pointer to the grid grid
 // next: pointer to the next grid
 // k: gride size
 // n: number of iterations to be calculated
@@ -20,12 +20,13 @@
 
 
 
-void static_update_OpenMP(unsigned char *current, unsigned char* next, int k,  int n,  int s){
+void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s){
     
     // OpenMP implementation upon one process
-    for (int n=0; n<n; n++){
+    for (int step=0; step<n; step++){
         int nthreads;
-        #pragma omp parallel{
+        #pragma omp parallel
+        {
         int id = omp_get_thread_num();
 
         #pragma omp master
@@ -41,23 +42,25 @@ void static_update_OpenMP(unsigned char *current, unsigned char* next, int k,  i
                 int prev_row = (i - 1 + k)%k;
                 int next_row = (i + 1 + k)%k;
 
-                sum = current[i*k+prev_col] + 
-                current[i*k+next_col] + 
-                current[prev_row*k+j] + 
-                current[next_row*k+j] + 
-                current[prev_row*k+prev_col] + 
-                current[prev_row*k+next_col] + 
-                current[next_row*k+prev_col] + 
-                current[next_row*k+next_col];
+                sum = grid[i*k+prev_col] + 
+                grid[i*k+next_col] + 
+                grid[prev_row*k+j] + 
+                grid[next_row*k+j] + 
+                grid[prev_row*k+prev_col] + 
+                grid[prev_row*k+next_col] + 
+                grid[next_row*k+prev_col] + 
+                grid[next_row*k+next_col];
 
                 next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
             }
         }
+        }
+        // end of parallel region
 
         unsigned char* tmp;
         tmp = next;
-        next = current;
-        current=tmp;
+        next = grid;
+        grid=tmp;
 
 
         if((step+1)%s==0){
@@ -85,7 +88,7 @@ void static_update_OpenMP(unsigned char *current, unsigned char* next, int k,  i
             
             }
     }
-    }
+    
 };
 
 
