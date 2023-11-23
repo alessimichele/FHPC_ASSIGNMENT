@@ -9,6 +9,7 @@
 #include "ordered_update.h"
 #include "ordered_update_finite.h"
 #include "static_update.h"
+#include "wave_update.h"
 
 #define INIT 1
 #define RUN  2
@@ -117,11 +118,19 @@ int main ( int argc, char **argv )
       free(next);
 
       printf("Completed.\n");
-    }else{
+    }else if(e == 2){
       printf("Running in ordered finite mode...\n");
 
       ordered_update_finite(grid, k, n, s);
 
+      printf("Completed.\n");
+    }else{
+      printf("Running in wave mode...\n");
+      
+      unsigned char* next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
+      wave_update(grid, next, k, n, s);
+      free(next);
+      
       printf("Completed.\n");
     }
     free(grid);

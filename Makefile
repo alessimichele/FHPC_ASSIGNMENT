@@ -3,7 +3,7 @@ CC = gcc -fopenmp
 INCDIR=src
 OBJDIR=src
 
-OBJECTS= main.o $(OBJDIR)/io_init.o $(OBJDIR)/ordered_update.o $(OBJDIR)/static_update.o $(OBJDIR)/ordered_update_finite.o 
+OBJECTS= main.o $(OBJDIR)/io_init.o $(OBJDIR)/ordered_update.o $(OBJDIR)/static_update.o $(OBJDIR)/ordered_update_finite.o $(OBJDIR)/wave_update.o
 CFLAGS = -c -I$(INCDIR) 
 
 main.x: $(OBJECTS)
