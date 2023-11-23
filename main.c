@@ -50,7 +50,6 @@ int main ( int argc, char **argv )
 
     case 'f':
       fname = (char*)malloc(strlen(optarg)*sizeof(char) + 1);
-      printf("optarg: %s\n", optarg);
       if (fname == NULL) {
         perror("Memory allocation error");
         return 1;

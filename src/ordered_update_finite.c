@@ -27,7 +27,8 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
     #pragma omp parallel
     {   
         int my_id = omp_get_thread_num();
-        #pragma omp master{
+        #pragma omp master
+        {
             int n_threads = omp_get_num_threads();
             if (n_threads > k)
             {
@@ -44,7 +45,7 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
             rows_for_me++; //total number of rows to be updated by each thread
         }
         for (int step = 0; step < n; step++)
-        {   for (int line = 0; line < rows_for_me, line++)
+        {   for (int line = 0; line < rows_for_me; line++)
             {   int n_neigh_255;
                 int my_current_row = my_id + n_threads * line; //my_id is the rest of the division of k by n_threads
                 if (my_current_row==0)//first row, different update since grid is not infinite
@@ -124,7 +125,8 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
                 }
             }
             #pragma omp barrier
-            #pragma omp master{
+            #pragma omp master
+            {
                 if((step+1)%s==0)
                 {
                     printf("now  i'm going to write the file\n");
@@ -154,6 +156,7 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
         }
     }
     free(flag);
+    return;
 }
 
 /*generica idea di documentazione: siccome nella grid finita non è possibile
