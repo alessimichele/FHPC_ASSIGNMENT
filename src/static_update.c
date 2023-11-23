@@ -84,14 +84,6 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 
                 free(fname);
                 free(file_path);
-                
-            
             }
     }
-    
 };
-
-
-
-
-
