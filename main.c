@@ -96,6 +96,10 @@ int main ( int argc, char **argv )
       return 1; 
     }
 
+    if (file_path==NULL){
+      perror("Initial grid not found. Please run with -i for initialization.");
+      return 1;
+    }
     
     unsigned char* grid;
     

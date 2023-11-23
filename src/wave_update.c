@@ -47,41 +47,49 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
     srand(0);
     int rand_cell_idx = rand() % (k*k);
 
+    printf("entered wave update\n");
+
     for(int step=0; step<n; step++){
+
+        printf("Step %d\n", step);
 
         // questo for itera sui raggi
         for (int radius=1; radius<= (k / 2 + 1 ); radius++){
+            printf("Radius %d\n", radius);
             int tmp = (4*(2*radius - 1) + 4);
             unsigned int* idxs = recoverSquare(k, rand_cell_idx, radius);
             
+            
             // questo for itera sulle celle del quadrato
             for (int ii=0; ii<tmp;ii++){
+                
+                printf("Entered inner for\n");
+                
                 int sum;
-                int prev_col = idxs[ii] -1;
-                int next_col = idxs[ii] +1;
-
-
+                
+                int prev_col = (idxs[ii] -1)%(k*k);
+                int next_col = (idxs[ii] +1)%(k*k);
+                
                 sum = grid[prev_col]+
-                grid[prev_col + k] + 
-                grid[prev_col -k] +
-                grid[idxs[ii] - k] + 
-                grid[idxs[ii] + k] + 
-                grid[next_col - k] +
-                grid[next_col + k] +
+                grid[(prev_col + k)%(k*k)] + 
+                grid[(prev_col -k)%(k*k)] +
+                grid[(idxs[ii] - k)%(k*k)] + 
+                grid[(idxs[ii] + k)%(k*k)] + 
+                grid[(next_col - k)%(k*k)] +
+                grid[(next_col + k)%(k*k)] +
                 grid[next_col];
-
+               
                 next[idxs[ii]] = (sum > 765 || sum < 510) ? 0 : 255;  // salvo  per ogni cella del quadrato il suo next state
                 }
+                printf("check 00\n");
                 // sostituisco gli stati aggiornati delle celle del quadrato nella griglia
                 for (int ii=0; ii<tmp; ii++){
                     grid[idxs[ii]] = next[idxs[ii]];
                 }
+                printf("check 1\n");
                 free(idxs);
+                printf("check 2\n");
         }
-
-        
-
-
 
 /*
         if((step+1)%s==0){
