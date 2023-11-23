@@ -125,15 +125,30 @@ void ordered_update_finite(unsigned char* grid, int k, int n, int s, int ){
             }
             #pragma omp barrier
             #pragma omp master{
-                if (step+1%s==0)
-                {
-                    char path[45] = "images/evolve_ordered/";
-                    char name[20];
-                    snprintf(name, 20, "snapshot_%05d.pgm", current_step+1);
-                    strcat(path, name);
-                    //DA RIVEDERE QUANDO AVREMO SCRITTO LA FUNZIONE write_pgm_parallel
-                    write_pgm_parallel(grid, 255, k, k, path, 0, 1, k);
-                }
+                if((step+1)%s==0){
+                printf("now  i'm going to write the file\n");
+
+               
+                char *file_path = (char*)malloc(32*sizeof(char) + 1);
+                strcpy(file_path, "files/ordered_finite/");
+
+                char *fname = (char*)malloc(20*sizeof(char) + 1);
+                snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
+                printf("fname: %s\n", fname);
+
+            
+                strcat(file_path, fname);
+                // print the file path
+                printf("file path: %s\n", file_path);
+                printf("address of file_path: %p\n", file_path);
+
+                write_pgm_image((void *)grid, 255, k, k, file_path);
+
+                free(fname);
+                free(file_path);
+                
+            
+            }
             }
         }
     }
