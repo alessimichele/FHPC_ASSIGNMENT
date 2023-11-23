@@ -7,6 +7,8 @@
 
 #include "io_init.h"
 #include "ordered_update.h"
+#include "ordered_update_finite.h"
+#include "static_update.h"
 
 #define INIT 1
 #define RUN  2
@@ -15,8 +17,9 @@
 
 #define ORDERED 0
 #define STATIC  1
+#define ORDERED_FINITE 2
 
-int   action = 0;
+int   action = INIT;
 int   k      = K_DFLT;
 int   e      = ORDERED;
 int   n      = 10000;
@@ -46,8 +49,13 @@ int main ( int argc, char **argv )
       e = atoi(optarg); break;
 
     case 'f':
-      fname = (char*)malloc( sizeof(optarg)+1 );
-      sprintf(fname, "%s", optarg );
+      fname = (char*)malloc(strlen(optarg)*sizeof(char) + 1);
+      printf("optarg: %s\n", optarg);
+      if (fname == NULL) {
+        perror("Memory allocation error");
+        return 1;
+      }
+      strcpy(fname, optarg);
       break;
 
     case 'n':
@@ -60,33 +68,67 @@ int main ( int argc, char **argv )
       printf("argument -%c not known\n", c ); break;
     }
   }
+  
+  // Where the initial grid is stored
+  char *path = (char*)malloc(11*sizeof(char) + 1);
+  strcpy(path, "files/init/");
+  char *file_path = (char*)malloc((strlen(path) + strlen(fname))*sizeof(char) + 1);
+  strcpy(file_path, path);
+  
+  if (fname != NULL) {
+    strcat(file_path, fname);
+} else {
+    perror("Filename is not provided. Please provide a filename with -f option. This will be the name of the file containing the initial grid.\n");
+    return 1; // return with error code
+}
 
-  if ( fname == NULL )
-    {
-      fname = (char*)malloc( 30 );
-      sprintf(fname, "files/init/initial_gird.pgm");
-    }
 
-  //if -i is called, initialize the grid
+
+  // if -i is called, initialize the grid
   if ( action == INIT )
-    {
-      printf("initializing\n");
-      // initialize the image
-      init_serial(fname, k);
+    { 
+      printf("Initializing...\n");
+      init_serial(file_path, k);
+    }else{ 
+    
+    if (action != RUN) {
+      perror("Please provide an action. Either -i for initialization or -r for running the simulation.\n");
+      return 1; 
     }
-  else if ( action == RUN )
+
+    
+    unsigned char* grid;
+    
+    read_pgm_image((void**)&grid, &maxval, &k, &k, file_path);
+    printf("The initial grid has been read.\n");
+   
+
+  if ( e == 0 )
     {
-      char *grid = (char*)malloc(k*k*sizeof(char));
-      void *grid_ptr = (void *)grid;
-      read_pgm_image(&grid_ptr, &maxval, &k, &k, fname);
-      
-      printf("running\n");
-      // run the simulation
+      printf("Running in ordered mode...\n");
+
       ordered_update(grid, k, n, s);
+
+      printf("Completed.\n");
+    }else if(e == 1){
+      printf("Running in static mode...\n");
+      
+      unsigned char* next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
+      static_update_OpenMP(grid, next, k, n, s);
+      free(next);
+
+      printf("Completed.\n");
+    }else{
+      printf("Running in ordered finite mode...\n");
+
+      ordered_update_finite(grid, k, n, s);
+
+      printf("Completed.\n");
     }
-
-
- 
-free(fname);
+    free(grid);
+}
+  free(fname);
+  free(path);
+  free(file_path);
   return 0;
 }

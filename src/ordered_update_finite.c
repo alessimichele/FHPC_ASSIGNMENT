@@ -3,13 +3,13 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
-#include <mpi.h>
+
 #include <omp.h>
 
 #include "ordered_update_finite.h"
 #include "io_init.h"
 
-void ordered_update_finite(unsigned char* grid, int k, int n, int s, int ){
+void ordered_update_finite(unsigned char* grid, int k, int n, int s ){
     /*
     evolve the current state of the game of life grid for n using the ordered 
     update algorithm. The grid has size k x k.

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
-#include <mpi.h>
+
 #include <omp.h>
 
 #include "static_update.h"
@@ -18,26 +18,19 @@
 // size: number of processes
 // rows_per_process: number of rows per process
 
-void static_update(unsigned char *current, unsigned char* next, int k,  int n,  int s, int rank, int size, int rows_per_process){
 
-    if (size==1){
-        static_update_OpenMP(current, next, k, n, s);
-    } else {
-        static_update_MPI(current, next, k, n, s, rank, size, rows_per_process);
-    }
-};
 
 void static_update_OpenMP(unsigned char *current, unsigned char* next, int k,  int n,  int s){
     
     // OpenMP implementation upon one process
     for (int n=0; n<n; n++){
         int nthreads;
-        #pragma omp parallel
+        #pragma omp parallel{
         int id = omp_get_thread_num();
 
-        #pragma omp master{
+        #pragma omp master
             nthreads = omp_get_num_threads();
-        }
+        
 
         #pragma omp for
         for (int i=0; i<k; i++){
@@ -92,13 +85,9 @@ void static_update_OpenMP(unsigned char *current, unsigned char* next, int k,  i
             
             }
     }
-
+    }
 };
 
-void static_update_MPI(unsigned char *current, unsigned char* next, int k,  int n,  int s, int rank, int size, int rows_per_process){
-
-
-};
 
 
 
