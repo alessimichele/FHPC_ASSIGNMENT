@@ -87,3 +87,48 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
             }
     }
 };
+
+
+
+void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int size, int rows_per_process){
+    
+}
+
+void static_update_rectangle(unsigned char* rectangle, unsigned char* next, int k, int n, int s, int rows_per_process, int rank, int size){
+    //rectangle is the grid of the process, with one previous and one next row, so that 
+    if (rank != 0){
+        MPI_Recv(&rectangle[0], k, MPI_UNSIGNED_CHAR, rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }else{
+        MPI_Recv(&rectangle[0], k, MPI_UNSIGNED_CHAR, size-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+    #pragma omp parallel
+    {
+        int id = omp_get_thread_num();
+        int nthreads = omp_get_num_threads();
+        #pragma omp for
+        
+        for (int i=1; i<rows_per_process+1; i++){
+            for (int j=0; j<k; j++){
+                int sum;
+                int prev_col = (j - 1 + k)%k;
+                int next_col = (j + 1 + k)%k;
+                int prev_row = (i - 1 + rows_per_process)%rows_per_process;
+                int next_row = (i + 1 + rows_per_process)%rows_per_process;
+                sum = rectangle[i*k+prev_col] + 
+                rectangle[i*k+next_col] + 
+                rectangle[prev_row*k+j] + 
+                rectangle[next_row*k+j] + 
+                rectangle[prev_row*k+prev_col] + 
+                rectangle[prev_row*k+next_col] + 
+                rectangle[next_row*k+prev_col] + 
+                rectangle[next_row*k+next_col];
+
+                next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
+            }
+        }
+        unsigned char* tmp;
+        tmp = next;
+        next = rectangle;
+        rectangle=tmp;
+    
+    }
