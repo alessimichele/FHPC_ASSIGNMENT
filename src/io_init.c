@@ -33,7 +33,7 @@ void write_pgm_image( void *grid, int maxval, int xsize, int ysize,  char *file_
 {
   FILE* file_stream; 
 
-  file_stream = fopen(file_name, "a"); 
+  file_stream = fopen(file_name, "w+"); 
   
 
   printf("Writing file %s\n", file_name);
