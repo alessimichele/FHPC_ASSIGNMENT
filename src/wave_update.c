@@ -166,7 +166,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
         if((step+1)%s==0){
                 printf("now  i'm going to write the file\n");
                
-                char *file_path = (char*)malloc(31*sizeof(char) + 1);
+                char *file_path = (char*)malloc(29*sizeof(char) + 1);
                 strcpy(file_path, "files/wave/");
 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
