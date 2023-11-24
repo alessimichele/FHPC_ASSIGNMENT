@@ -22,30 +22,34 @@ int map_even_grid(int rand_cell_idx, int k){
 }
 
 unsigned int* recoverSquare(int k, int index, int radius) {
-  if (radius > ((k / 2))) 
-    {
-    perror("Something went wrong. Radius too large");
-    return NULL;
+    if (radius > ((k / 2))) {
+        perror("Something went wrong. Radius too large");
+        return NULL;
     }
+
 
     int tmp = (4*(2*radius - 1) + 4);
 
     unsigned int* indxs = (unsigned int*)malloc(tmp*sizeof(unsigned int));
 
     int count=0;
-    for (int i = -radius; i <= radius; ++i) {
-        for (int j = -radius; j <= radius; ++j) {
-  
-            if (i > -radius && i < radius && j > -radius && j < radius)
-                continue; // Skip the inner square
-            int row = (index / k + i + k) % k; // "mod k"
-            int col = (index % k + j + k) % k;
-            
-            unsigned int currentIndex = row * k + col;
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = -radius; i <= radius; ++i) {
+            for (int j = -radius; j <= radius; ++j) {
 
-            indxs[count] = currentIndex;
-            count++;
-        }
+                if (i > -radius && i < radius && j > -radius && j < radius)
+                    continue; // Skip the inner square
+                int row = (index / k + i + k) % k; // "mod k"
+                int col = (index % k + j + k) % k;
+                
+                unsigned int currentIndex = row * k + col;
+
+                indxs[count] = currentIndex;
+                count++;
+            }
+        }   
     }
     return indxs;
 }
@@ -54,6 +58,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
     
     // randomly select one cell of the grid to be the source of the wave
     srand(0);
+
     int rand_cell_idx = rand() % (k*k);
 
     //printf("entered wave update\n");
@@ -78,30 +83,35 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                 continue;
             }
             // questo for itera sulle celle del quadrato
-            for (int ii=0; ii<tmp1;ii++){
-                int prev_col = (idxs[ii] -1+(k*k))%(k*k);
-                int next_col = (idxs[ii] +1+(k*k))%(k*k);
+            #pragma omp parallel
+            {
+                #pragma omp for
+                for (int ii=0; ii<tmp1;ii++){
+                    int prev_col = (idxs[ii] -1+(k*k))%(k*k);
+                    int next_col = (idxs[ii] +1+(k*k))%(k*k);
 
-                int sum=0;
-                sum += grid[prev_col]+
-                grid[(prev_col + k+(k*k))%(k*k)] +
-                grid[(prev_col -k+(k*k))%(k*k)] +
-                grid[(idxs[ii] - k+(k*k))%(k*k)] + 
-                grid[(idxs[ii] + k+(k*k))%(k*k)] + 
-                grid[(next_col - k+(k*k))%(k*k)] +
-                grid[(next_col + k+(k*k))%(k*k)] +
-                grid[next_col];
-               
-                next[idxs[ii]] = (sum > 765 || sum < 510) ? 0 : 255;  // salvo  per ogni cella del quadrato il suo next state
-             
-                } // end of iteration over cells in the given square
-               
-                // sostituisco gli stati aggiornati delle celle del quadrato nella griglia
-                for (int ii=0; ii<tmp1; ii++){
-                    grid[idxs[ii]] = next[idxs[ii]];
-                }
+                    int sum=0;
+                    sum += grid[prev_col]+
+                    grid[(prev_col + k+(k*k))%(k*k)] +
+                    grid[(prev_col -k+(k*k))%(k*k)] +
+                    grid[(idxs[ii] - k+(k*k))%(k*k)] + 
+                    grid[(idxs[ii] + k+(k*k))%(k*k)] + 
+                    grid[(next_col - k+(k*k))%(k*k)] +
+                    grid[(next_col + k+(k*k))%(k*k)] +
+                    grid[next_col];
                 
-                free(idxs); 
+                    next[idxs[ii]] = (sum > 765 || sum < 510) ? 0 : 255;  // salvo  per ogni cella del quadrato il suo next state
+                
+                    } // end of iteration over cells in the given square
+
+                    #pragma omp for
+                    // sostituisco gli stati aggiornati delle celle del quadrato nella griglia
+                    for (int ii=0; ii<tmp1; ii++){
+                        grid[idxs[ii]] = next[idxs[ii]];
+                    }
+                } // end of parallel region    
+                    free(idxs);
+                
         } // end of iteration over radius
         
 
@@ -115,8 +125,11 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
             // row index and col index of the cell that is the intersection of the non-updated row and col at the end
             int row = crucial_point / k;
             int col = crucial_point % k;
-           
+
+            #pragma omp parallel
+            {
             // update last row and col
+            #pragma omp for
             for (int i = 0; i<k;i++){
                 int j = col;
                 int sum;
@@ -137,6 +150,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
 
                 next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
             }
+            #pragma omp for
             for (int j = 0; j<k;j++){
                 if (j != col){ 
                     int i = row;
@@ -156,20 +170,22 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                     grid[next_row*k+prev_col] + 
                     grid[next_row*k+next_col];
 
-     
                     next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
-                    }
+                }
             }
         
-
+            #pragma omp for
             for (int i=0; i<k; i++){
                 grid[i*k + col] = next[i*k + col];
             }
+            #pragma omp for
             for (int j=0; j<k; j++){
                 if (j!= col){
                     grid[row*k + j] = next[row*k + j]; 
                 }
-            }   
+            }
+
+            } // end of the parallel region 
         } // end of the flag
 
         printf("step %d completed\n", step);
@@ -194,10 +210,8 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
 
                 free(fname);
                 free(file_path);
-            }
-            
-    
-    }
+            } 
+    } // end of iteration over step
 
     return;
 };
