@@ -9,21 +9,28 @@
 #include "wave_update.h"
 #include "io_init.h"
 
+
+int map_even_grid(int rand_cell_idx, int k){
+    if (k%2 !=0 ){
+        perror("Something went wrong, this function should be called only when k is even.\n");
+    }
+    if (rand_cell_idx%k < 2){
+        return (rand_cell_idx+ ((k/2) *k))%(k*k) + k/2;
+    }else{
+        return (rand_cell_idx+ ((k/2) *k))%(k*k) - k/2;
+    }
+}
+
 unsigned int* recoverSquare(int k, int index, int radius) {
-
-    // FREE IDXS MALLOC
-
   if (radius > ((k / 2))) 
     {
-    perror("Radius too large");
+    perror("Something went wrong. Radius too large");
     return NULL;
     }
 
     int tmp = (4*(2*radius - 1) + 4);
 
     unsigned int* indxs = (unsigned int*)malloc(tmp*sizeof(unsigned int));
-    // print address of idxs
-    printf("address of idxs: %p\n", indxs);
 
     int count=0;
     for (int i = -radius; i <= radius; ++i) {
@@ -34,7 +41,6 @@ unsigned int* recoverSquare(int k, int index, int radius) {
             int row = (index / k + i + k) % k; // "mod k"
             int col = (index % k + j + k) % k;
             
-
             unsigned int currentIndex = row * k + col;
 
             indxs[count] = currentIndex;
@@ -50,7 +56,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
     srand(0);
     int rand_cell_idx = rand() % (k*k);
 
-    printf("entered wave update\n");
+    //printf("entered wave update\n");
 
     // iterate over the step
     for(int step=0; step<n; step++){
@@ -60,55 +66,56 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
 
         // questo for itera sui raggi
         for (int radius=1; radius<= thresh; radius++){
-            printf("Radius %d\n", radius);
+            // printf("Radius %d\n", radius);
             int tmp1 = (4*(2*radius - 1) + 4);
             unsigned int* idxs = recoverSquare(k, rand_cell_idx, radius);
-            // print address of idxs
-            printf("address of idxs: %p\n", idxs);
 
             
             if (idxs==NULL){
                 // go to next iteration of the outer outer loop (the one with step)
-                printf("idxs is NULL\n");
+                // if code works properly, this should never happen
+                printf("idxs is NULL... something is going wrong, check it please.\n");
                 continue;
             }
             // questo for itera sulle celle del quadrato
             for (int ii=0; ii<tmp1;ii++){
-                int sum;
-                printf("check 1\n");
                 int prev_col = (idxs[ii] -1+(k*k))%(k*k);
                 int next_col = (idxs[ii] +1+(k*k))%(k*k);
-                printf("prev_col: %d\n", prev_col);
-                printf("next_col: %d\n", next_col);
-                printf("check 2\n");
-                sum = grid[prev_col]+grid[(prev_col + k+(k*k))%(k*k)];
-                printf("%d\n", (prev_col -k+(k*k))%(k*k));
-                sum +=  grid[(prev_col -k+(k*k))%(k*k)];
-                printf("check 3\n");
-                sum += grid[(idxs[ii] - k+(k*k))%(k*k)] + 
+
+                int sum=0;
+                sum += grid[prev_col]+
+                grid[(prev_col + k+(k*k))%(k*k)] +
+                grid[(prev_col -k+(k*k))%(k*k)] +
+                grid[(idxs[ii] - k+(k*k))%(k*k)] + 
                 grid[(idxs[ii] + k+(k*k))%(k*k)] + 
                 grid[(next_col - k+(k*k))%(k*k)] +
                 grid[(next_col + k+(k*k))%(k*k)] +
                 grid[next_col];
-                printf("check 4\n");
+               
                 next[idxs[ii]] = (sum > 765 || sum < 510) ? 0 : 255;  // salvo  per ogni cella del quadrato il suo next state
-                printf("cell %d processed\n", ii);
+             
                 } // end of iteration over cells in the given square
                
                 // sostituisco gli stati aggiornati delle celle del quadrato nella griglia
                 for (int ii=0; ii<tmp1; ii++){
                     grid[idxs[ii]] = next[idxs[ii]];
                 }
-                free(idxs);
                 
+                free(idxs); 
         } // end of iteration over radius
-        printf("step %d completed\n", step);
+        
 
         // FLAG
         if (k%2==0){
-            printf("entered flag\n");
-            int row = (rand_cell_idx + k/2)%k;
-            int col = (rand_cell_idx + k/2)%k - row*k;
+            // enter here only if k is even
+            // and finish to update the grid
+
+            int crucial_point = map_even_grid(rand_cell_idx, k); // intersection of the missing col and row
+            
+            // row index and col index of the cell that is the intersection of the non-updated row and col at the end
+            int row = crucial_point / k;
+            int col = crucial_point % k;
+           
             // update last row and col
             for (int i = 0; i<k;i++){
                 int j = col;
@@ -117,6 +124,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                 int next_col = (j + 1 + k)%k;
                 int prev_row = (i - 1 + k)%k;
                 int next_row = (i + 1 + k)%k;
+
 
                 sum = grid[i*k+prev_col] + 
                 grid[i*k+next_col] + 
@@ -132,6 +140,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
             for (int j = 0; j<k;j++){
                 if (j != col){ 
                     int i = row;
+                    
                     int sum;
                     int prev_col = (j - 1 + k)%k;
                     int next_col = (j + 1 + k)%k;
@@ -147,6 +156,7 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
                     grid[next_row*k+prev_col] + 
                     grid[next_row*k+next_col];
 
+     
                     next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
                     }
             }
@@ -162,21 +172,23 @@ void wave_update(unsigned char* grid, unsigned char* next, int k, int n, int s )
             }   
         } // end of the flag
 
+        printf("step %d completed\n", step);
+
 
         if((step+1)%s==0){
-                printf("now  i'm going to write the file\n");
+                //printf("now  i'm going to write the file\n");
                
                 char *file_path = (char*)malloc(29*sizeof(char) + 1);
                 strcpy(file_path, "files/wave/");
 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
                 snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                printf("fname: %s\n", fname);
+                //printf("fname: %s\n", fname);
 
                 strcat(file_path, fname);
                 // print the file path
-                printf("file path: %s\n", file_path);
-                printf("address of file_path: %p\n", file_path);
+                //printf("file path: %s\n", file_path);
+                //printf("address of file_path: %p\n", file_path);
 
                 write_pgm_image((void *)grid, 255, k, k, file_path);
 

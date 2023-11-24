@@ -36,8 +36,8 @@ void write_pgm_image( void *grid, int maxval, int xsize, int ysize,  char *file_
   file_stream = fopen(file_name, "w+"); 
   
 
-  printf("Writing file %s\n", file_name);
-  printf("file_stream address: %p\n", file_stream);
+  //printf("Writing file %s\n", file_name);
+  //printf("file_stream address: %p\n", file_stream);
 
   int color_depth = 1 + ( maxval > 255 );
 

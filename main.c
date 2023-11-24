@@ -89,6 +89,7 @@ int main ( int argc, char **argv )
     { 
       printf("Initializing...\n");
       init_serial(file_path, k);
+      printf("Initializing done!\n");
     }else{ 
     
     if (action != RUN) {
@@ -133,7 +134,6 @@ int main ( int argc, char **argv )
       
       unsigned char* next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
       wave_update(grid, next, k, n, s);
-      printf("almost done\n");
       free(next);
       
       printf("Completed.\n");

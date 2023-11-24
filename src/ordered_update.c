@@ -44,7 +44,7 @@ void ordered_update(unsigned char* grid, int k, int n, int s){
         
 
             if((step+1)%s==0){
-                printf("now  i'm going to write the file\n");
+                //printf("now  i'm going to write the file\n");
 
                
                 char *file_path = (char*)malloc(32*sizeof(char) + 1);
@@ -52,13 +52,13 @@ void ordered_update(unsigned char* grid, int k, int n, int s){
 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
                 snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                printf("fname: %s\n", fname);
+                //printf("fname: %s\n", fname);
 
             
                 strcat(file_path, fname);
                 // print the file path
-                printf("file path: %s\n", file_path);
-                printf("address of file_path: %p\n", file_path);
+                //printf("file path: %s\n", file_path);
+                //printf("address of file_path: %p\n", file_path);
 
                 write_pgm_image((void *)grid, 255, k, k, file_path);
 
