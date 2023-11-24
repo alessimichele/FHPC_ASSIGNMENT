@@ -32,12 +32,9 @@ void write_pgm_image( void *grid, int maxval, int xsize, int ysize,  char *file_
  */
 {
   FILE* file_stream; 
-  
-  printf("file_stream address: %p\n", file_stream);
-
-  printf("file_name: %s\n", file_name);
 
   file_stream = fopen(file_name, "a"); 
+  
 
   printf("Writing file %s\n", file_name);
   printf("file_stream address: %p\n", file_stream);
@@ -141,7 +138,7 @@ void init_serial(char *file_name, int k){
   srand(0);
 
   // probability to generate a 0 or a 1
-  double p = 1.0;
+  double p = 0.2;
   // fill the grid with random values: 0 or 255
   for (int i=0; i<k*k; i++){
     grid[i] = (rand() < p * RAND_MAX) ? 0 : 255;
