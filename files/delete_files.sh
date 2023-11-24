@@ -18,3 +18,7 @@ do
         exit 1
     fi
 done
+
+# run it with: 
+# bash delete_files.sh ordered static wave
+# to delete all files in the ordered, static, and wave directories
