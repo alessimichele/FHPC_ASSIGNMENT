@@ -89,7 +89,7 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 };
 
 
-
+/*
 void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int size, int rows_per_process){
     
 }
@@ -132,3 +132,5 @@ void static_update_rectangle(unsigned char* rectangle, unsigned char* next, int 
         rectangle=tmp;
     
     }
+
+    */
