@@ -42,7 +42,7 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
         int id = omp_get_thread_num();
 
         #pragma omp master
-            nthreads = omp_get_num_threads();
+        nthreads = omp_get_num_threads();
         
 
         #pragma omp for
@@ -204,6 +204,7 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
         tmp = next;
         next = grid;
         grid = tmp;
+        printf("Rank %d has completed step %d.\n", rank, step);
         
         //if ((step+1)%s==0)){
         //    //let's write the file
@@ -729,7 +730,7 @@ int main(){
     MPI_Init(NULL, NULL);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    int k = 100;
+    int k = 1000;
    // unsigned char *grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
    // unsigned char *next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
     int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
