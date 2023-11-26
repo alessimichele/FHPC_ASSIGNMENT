@@ -1,1 +1,1 @@
-void ordered_update_finite(unsigned char* grid, int k, int n_steps, int s, int )
+void ordered_update_finite(unsigned char* grid, int k, int n, int s );
