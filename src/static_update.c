@@ -28,7 +28,7 @@ void static_update(unsigned char *grid, unsigned char* next, int k,  int n,  int
 }
 
 void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s){
-    MPI_Init(NULL, NULL);
+    
     // OpenMP implementation upon one process
     for (int step=0; step<n; step++){
         int nthreads;
@@ -97,6 +97,7 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 
 
 void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process){
+    MPI_Init(NULL, NULL);
     MPI_Request request[4];  
     char* previous_row = (char*)malloc(k*sizeof(char));
     char* next_row = (char*)malloc(k*sizeof(char));
@@ -105,82 +106,82 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
         
         int my_rows_number = (rank<(k%size)) ? rows_per_process+1 : rows_per_process;
         //non blocking
-
+        //send the last row
         MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[0]); //fix the tag 
-        MPI_Isend(grid, k, MPI_CHAR, (rank+k-1)%size, 0, MPI_COMM_WORLD, &request[1]); //fix the tag
+        //send the first row
+        MPI_Isend(grid, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[1]); //fix the tag
 
-        MPI_Irecv(previous_row, k, MPI_CHAR, (rank+k-1)%size, 0, MPI_COMM_WORLD, &request[2]);
+        //receive the last row
+        MPI_Irecv(previous_row, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[2]);
+        //receive the first row
         MPI_Irecv(next_row, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[3]);
 
         MPI_Waitall(4, request, MPI_STATUS_IGNORE);
         //update first row
         #pragma omp parallel
         {    
-            #pragma omp for
-            {    
-                for (int j=0; j<k; j++){
-                    int sum;
-                    int prev_col = (j - 1 + k)%k;
-                    int next_col = (j + 1 + k)%k;
-                    int next_row = 1;
+            #pragma omp for  
+            for (int j=0; j<k; j++){
+                int sum;
+                int prev_col = (j - 1 + k)%k;
+                int next_col = (j + 1 + k)%k;
+                int next_row = 1;
 
-                    sum = previous_row[prev_col] + 
-                    previous_row[j] +
-                    previous_row[next_col] + 
-                    grid[next_row*k+j] + 
-                    grid[next_row*k+prev_col] + 
-                    grid[next_row*k+next_col] +
-                    grid[0*k+prev_col] +
-                    grid[0*k+next_col];
+                sum = previous_row[prev_col] + 
+                previous_row[j] +
+                previous_row[next_col] + 
+                grid[next_row*k+j] + 
+                grid[next_row*k+prev_col] + 
+                grid[next_row*k+next_col] +
+                grid[0*k+prev_col] +
+                grid[0*k+next_col];
 
-                    next[j] = (sum > 765 || sum < 510) ? 0 : 255; 
-                }
+                next[j] = (sum > 765 || sum < 510) ? 0 : 255; 
+            
             }
             //update last row
             #pragma omp for
-            {    
-                for (int j=0; j<k; j++){
-                    int sum;
-                    int prev_col = (j - 1 + k)%k;
-                    int next_col = (j + 1 + k)%k;
-                    int prev_row = my_rows_number-2;
+            for (int j=0; j<k; j++){
+                int sum;
+                int prev_col = (j - 1 + k)%k;
+                int next_col = (j + 1 + k)%k;
+                int prev_row = my_rows_number-2;
 
-                    sum = grid[prev_row*k+prev_col] + 
-                    grid[prev_row*k+j] +
-                    grid[prev_row*k+next_col] +
-                    grid[(my_rows_number-1)*k+prev_col] + 
-                    grid[(my_rows_number-1)*k+next_col] +
-                    next_row[prev_col] +
-                    next_row[next_col] +
-                    next_row[j];
+                sum = grid[prev_row*k+prev_col] + 
+                grid[prev_row*k+j] +
+                grid[prev_row*k+next_col] +
+                grid[(my_rows_number-1)*k+prev_col] + 
+                grid[(my_rows_number-1)*k+next_col] +
+                next_row[prev_col] +
+                next_row[next_col] +
+                next_row[j];
 
-                    next[(my_rows_number-1)*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
-                }
+                next[(my_rows_number-1)*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
             }
+            
             //update the rest of the rows
             #pragma omp for
-            {
-                for (int i=1; i<my_rows_number-1; i++){
-                    for (int j=0; j<k; j++){
-                        int sum;
-                        int prev_col = (j - 1 + k)%k;
-                        int next_col = (j + 1 + k)%k;
-                        int prev_row = i-1;
-                        int next_row = i+1;
-    
-                        sum = grid[prev_row*k+prev_col] + 
-                        grid[prev_row*k+j] +
-                        grid[prev_row*k+next_col] +
-                        grid[next_row*k+prev_col] + 
-                        grid[next_row*k+next_col] +
-                        grid[next_row*k+j] +
-                        grid[i*k+prev_col] +
-                        grid[i*k+next_col];
-    
-                        next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
-                    }
-                }
-            }
+             for (int i=1; i<my_rows_number-1; i++){
+                 for (int j=0; j<k; j++){
+                     int sum;
+                     int prev_col = (j - 1 + k)%k;
+                     int next_col = (j + 1 + k)%k;
+                     int prev_row = i-1;
+                     int next_row = i+1;
+
+                     sum = grid[prev_row*k+prev_col] + 
+                     grid[prev_row*k+j] +
+                     grid[prev_row*k+next_col] +
+                     grid[next_row*k+prev_col] + 
+                     grid[next_row*k+next_col] +
+                     grid[next_row*k+j] +
+                     grid[i*k+prev_col] +
+                     grid[i*k+next_col];
+
+                     next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
+                 }
+             }
+            
         }
         //let's syncronize the processes
         MPI_Barrier(MPI_COMM_WORLD);
