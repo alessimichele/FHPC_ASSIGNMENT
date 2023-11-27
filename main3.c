@@ -66,6 +66,8 @@ int main ( int argc, char **argv ){
         }
     }
 
+    printf("s: %d\n", s);
+
     if (s==0){
         s = n;
     }
@@ -122,6 +124,7 @@ int main ( int argc, char **argv ){
 
             if(rank==0)printf("Run in order mode.\n");
             ordered_update(partial_grid, k, n, s);
+            if(rank==0)printf("Done!\n");
 
         }else if (e == STATIC){
 
@@ -129,6 +132,7 @@ int main ( int argc, char **argv ){
             unsigned char* next = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
             static_update(partial_grid, next, k, n, s, rank, size, my_rows_number);
             free(next);
+            if(rank==0)printf("Done!\n");
 
         //}else if (e == WAVE){
 //
@@ -138,6 +142,7 @@ int main ( int argc, char **argv ){
         //    ///MPI_Allgatherv !!!!!
         //    unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
         //    wave_update(grid, next, k, n, s, size, rank);
+        //    if(rank==0)printf("Done!\n");
         //    free(next);
 //
         }else{
