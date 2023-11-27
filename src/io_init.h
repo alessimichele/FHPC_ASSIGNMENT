@@ -1,4 +1,3 @@
-void write_pgm_image( void *grid, int maxval, int xsize, int ysize,  char *file_name);
-void read_pgm_image( void **grid, int *maxval, int *xsize, int *ysize,  char *file_name);
-void init_serial( char *file_name, int k);
-void parallel_write_MPI(unsigned char* grid, int maxval, char* filename, int k, int my_rows_number, MPI_Comm comm);
+void parallel_write(unsigned char* grid, int maxval, char* file_path, int k, int my_rows_number, int rank, int size, MPI_Comm comm);
+void init_parallel(char *file_path, int k, int rank, int size, int my_rows_number);
+void parallel_read( unsigned char **grid_pointer, int *maxval, int *xsize, int *ysize,  char *file_path, int my_rows_number, int rank, int size, MPI_Comm comm);

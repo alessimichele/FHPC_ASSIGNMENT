@@ -16,14 +16,14 @@
 // s: every s-th iteration a dump of the grid is saved on a file
 // rank: rank of the process
 // size: number of processes
-// rows_per_process: number of rows per process
+// my_rows_number: number of rows per process
 
 //let's make a wrapper for the static update function
-void static_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int rows_per_process){
+void static_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int my_rows_number){
     if (size == 1){
         static_update_OpenMP(grid, next, k, n, s);
     }else{
-        static_update_MPI(grid, next, k, n, s, rank, size, rows_per_process);
+        static_update_MPI(grid, next, k, n, s, rank, size, my_rows_number);
     };
 }
 
@@ -87,7 +87,7 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
                 printf("file path: %s\n", file_path);
                 printf("address of file_path: %p\n", file_path);
 
-                write_pgm_image((void *)grid, 255, k, k, file_path);
+                parallel_write(grid, 255, file_path, k, k, 0, 1, MPI_COMM_WORLD);
 
                 free(fname);
                 free(file_path);
@@ -96,15 +96,14 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 };
 
 
-void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int rank, int size, int rows_per_process){
+void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int rank, int size, int my_rows_number){
     
     MPI_Request request[4];  
-    unsigned char* previous_row = (char*)malloc(k*sizeof(char));
-    unsigned char* next_row = (char*)malloc(k*sizeof(char));
+    unsigned char* previous_row = (unsigned char*)malloc(k*sizeof(unsigned char));
+    unsigned char* next_row = (unsigned char*)malloc(k*sizeof(unsigned char));
 
     for (int step=0; step<n; step++){    
         
-        int my_rows_number = (rank<(k%size)) ? rows_per_process+1 : rows_per_process;
         //non blocking 
         //send the last row, tag = step*size+rank
         MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+rank, MPI_COMM_WORLD, &request[0]); 
@@ -187,7 +186,7 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
         //let's syncronize the processes
         MPI_Barrier(MPI_COMM_WORLD);
         //let's switch the pointers
-        char* tmp;
+        unsigned char* tmp;
         tmp = next;
         next = grid;
         grid = tmp;
@@ -201,7 +200,7 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
             snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
             strcat(file_path, fname);
 
-            parallel_write_MPI(grid, 255, file_path, k, my_rows_number, MPI_COMM_WORLD);
+            parallel_write(grid, 255, file_path, k, my_rows_number, rank, size, MPI_COMM_WORLD);
     
             free(fname);
             free(file_path);  

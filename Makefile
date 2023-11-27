@@ -1,15 +1,15 @@
-CC = gcc -fopenmp
+CC = mpicc -fopenmp
 
 INCDIR=src
 OBJDIR=src
 
-OBJECTS= main.o $(OBJDIR)/io_init.o $(OBJDIR)/ordered_update.o $(OBJDIR)/static_update.o $(OBJDIR)/ordered_update_finite.o $(OBJDIR)/wave_update.o
+OBJECTS= main3.o $(OBJDIR)/io_init.o $(OBJDIR)/ordered_update.o $(OBJDIR)/static_update.o $(OBJDIR)/wave_update.o
 CFLAGS = -c -I$(INCDIR) 
 
-main.x: $(OBJECTS)
+main3.x: $(OBJECTS)
 		$(CC) $(OBJECTS) -o $@
-main.o: main.c
-		$(CC) $(CFLAGS) main.c
+main3.o: main3.c
+		$(CC) $(CFLAGS) main3.c
 $(OBJDIR)/%.o: $(INCDIR)/%.c
 		$(CC) $(CFLAGS) $^ -o $@
 clean:
