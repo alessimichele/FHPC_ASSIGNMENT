@@ -3,6 +3,8 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
+#include <mpi.h>
+#include <omp.h>
 
 #include "io_init.h"
 #include "ordered_update.h"
@@ -86,8 +88,9 @@ int main ( int argc, char **argv ){
 
     int rank, size;
     MPI_Init( NULL, NULL );
-    MPI_Comm_rank( MPI_COMM_WORLD,&rank );
-    MPI_Comm_size( MPI_COMM_WORLD,&size );
+    MPI_Comm comm = MPI_COMM_WORLD;
+    MPI_Comm_rank( comm,&rank );
+    MPI_Comm_size( comm,&size );
 
     int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
 
@@ -111,7 +114,7 @@ int main ( int argc, char **argv ){
     
         unsigned char *partial_grid;
         int maxval, xsize, ysize;
-        parallel_read(&partial_grid, &maxval, &xsize, &ysize, file_path, my_rows_number, rank, size, MPI_COMM_WORLD); // !!!!!!
+        parallel_read(&partial_grid, &maxval, &xsize, &ysize, file_path, my_rows_number, rank, size, comm); // !!!!!!
         
         if(rank==0)printf("The initial grid has been read.\n");
 
@@ -127,16 +130,16 @@ int main ( int argc, char **argv ){
             static_update(partial_grid, next, k, n, s, rank, size, my_rows_number);
             free(next);
 
-        }else if (e == WAVE){
-
-            if(rank==0)printf("Run in wave mode.\n");
-            
-            unsigned char* grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
-            ///MPI_Allgatherv !!!!!
-            unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
-            wave_update(grid, next, k, n, s, rank, size);
-            free(next);
-
+        //}else if (e == WAVE){
+//
+        //    if(rank==0)printf("Run in wave mode.\n");
+        //    
+        //    unsigned char* grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
+        //    ///MPI_Allgatherv !!!!!
+        //    unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
+        //    wave_update(grid, next, k, n, s, size, rank);
+        //    free(next);
+//
         }else{
             fprintf(stderr, "Please provide a valid execution mode. Either -e 0 for ordered, -e 1 for static or -e 2 for wave.\n");
         }

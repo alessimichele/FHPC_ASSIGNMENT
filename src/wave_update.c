@@ -300,7 +300,7 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
                 //printf("file path: %s\n", file_path);
                 //printf("address of file_path: %p\n", file_path);
 
-                write_pgm_image((void *)grid, 255, k, k, file_path);
+                //write_pgm_image((void *)grid, 255, k, k, file_path);
 
                 free(fname);
                 free(file_path);
@@ -317,7 +317,7 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
 ----------------------------------------------------------------------------------------------------------------
 */
 
-void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int s){
+void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int s, int size, int rank){
     /*
     Function that updates the grid according to the wave rule, using MPI.
 

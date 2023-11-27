@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <mpi.h>
 #include <omp.h>
+#include <time.h>
 
 #include "io_init.h"
 
