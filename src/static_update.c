@@ -21,13 +21,13 @@
 //let's make a wrapper for the static update function
 void static_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int my_rows_number){
     if (size == 1){
-        static_update_OpenMP(grid, next, k, n, s);
+        static_update_OpenMP(grid, next, k, n, s, rank, size, my_rows_number);
     }else{
         static_update_MPI(grid, next, k, n, s, rank, size, my_rows_number);
     };
 }
 
-void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s){
+void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int my_rows_number){
     
     // OpenMP implementation upon one process
     for (int step=0; step<n; step++){
@@ -196,7 +196,6 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
         if(rank==0)printf("s: %d\n", s);
         
         if ((step+1)%s==0){
-            printf("now  i'm going to write the file\n");
             char *file_path = (char*)malloc(32*sizeof(char) + 1);
             strcpy(file_path, "files/static/");
 
@@ -210,6 +209,7 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
             free(file_path);  
         }
 
+    
     }    
     free(previous_row);
     free(next_row);
