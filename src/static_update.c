@@ -96,31 +96,32 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 };
 
 
-void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process){
-    MPI_Init(NULL, NULL);
+void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int rank, int size, int rows_per_process){
+    
     MPI_Request request[4];  
-    char* previous_row = (char*)malloc(k*sizeof(char));
-    char* next_row = (char*)malloc(k*sizeof(char));
+    unsigned char* previous_row = (char*)malloc(k*sizeof(char));
+    unsigned char* next_row = (char*)malloc(k*sizeof(char));
 
     for (int step=0; step<n; step++){    
         
         int my_rows_number = (rank<(k%size)) ? rows_per_process+1 : rows_per_process;
-        //non blocking
-        //send the last row
-        MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[0]); //fix the tag 
+        //non blocking 
+        //send the last row, tag = step*size+rank
+        MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+rank, MPI_COMM_WORLD, &request[0]); 
         //send the first row
-        MPI_Isend(grid, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[1]); //fix the tag
+        MPI_Isend(grid, k, MPI_UNSIGNED_CHAR, (rank+size-1)%size, step*size+rank, MPI_COMM_WORLD, &request[1]); 
 
         //receive the last row
-        MPI_Irecv(previous_row, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[2]);
+        MPI_Irecv(previous_row, k, MPI_UNSIGNED_CHAR, (rank+size-1)%size, step*size+(rank+size-1)%size, MPI_COMM_WORLD, &request[2]);
         //receive the first row
-        MPI_Irecv(next_row, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[3]);
+        MPI_Irecv(next_row, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+(rank+1)%size, MPI_COMM_WORLD, &request[3]);
 
         MPI_Waitall(4, request, MPI_STATUS_IGNORE);
+      
         //update first row
         #pragma omp parallel
         {    
-            #pragma omp for  
+            #pragma omp for   
             for (int j=0; j<k; j++){
                 int sum;
                 int prev_col = (j - 1 + k)%k;
@@ -137,16 +138,16 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
                 grid[0*k+next_col];
 
                 next[j] = (sum > 765 || sum < 510) ? 0 : 255; 
-            
             }
+            
             //update last row
             #pragma omp for
+               
             for (int j=0; j<k; j++){
                 int sum;
                 int prev_col = (j - 1 + k)%k;
                 int next_col = (j + 1 + k)%k;
                 int prev_row = my_rows_number-2;
-
                 sum = grid[prev_row*k+prev_col] + 
                 grid[prev_row*k+j] +
                 grid[prev_row*k+next_col] +
@@ -155,32 +156,32 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
                 next_row[prev_col] +
                 next_row[next_col] +
                 next_row[j];
-
                 next[(my_rows_number-1)*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
             }
             
             //update the rest of the rows
-            #pragma omp for
-             for (int i=1; i<my_rows_number-1; i++){
-                 for (int j=0; j<k; j++){
-                     int sum;
-                     int prev_col = (j - 1 + k)%k;
-                     int next_col = (j + 1 + k)%k;
-                     int prev_row = i-1;
-                     int next_row = i+1;
+            #pragma omp parallel for
+            
+            for (int i=1; i<my_rows_number-1; i++){
+                for (int j=0; j<k; j++){
+                    int sum;
+                    int prev_col = (j - 1 + k)%k;
+                    int next_col = (j + 1 + k)%k;
+                    int prev_row = i-1;
+                    int next_row = i+1;
 
-                     sum = grid[prev_row*k+prev_col] + 
-                     grid[prev_row*k+j] +
-                     grid[prev_row*k+next_col] +
-                     grid[next_row*k+prev_col] + 
-                     grid[next_row*k+next_col] +
-                     grid[next_row*k+j] +
-                     grid[i*k+prev_col] +
-                     grid[i*k+next_col];
+                    sum = grid[prev_row*k+prev_col] + 
+                    grid[prev_row*k+j] +
+                    grid[prev_row*k+next_col] +
+                    grid[next_row*k+prev_col] + 
+                    grid[next_row*k+next_col] +
+                    grid[next_row*k+j] +
+                    grid[i*k+prev_col] +
+                    grid[i*k+next_col];
 
-                     next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
-                 }
-             }
+                    next[i*k+j] = (sum > 765 || sum < 510) ? 0 : 255; 
+                }
+            }
             
         }
         //let's syncronize the processes
@@ -190,43 +191,25 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
         tmp = next;
         next = grid;
         grid = tmp;
+        //printf("Rank %d has completed step %d.\n", rank, step);        
         
-        //if ((step+1)%s==0)){
-        //    //let's write the file
-//
-        //    if(rank==0){
-        //        char* total_image = (char*)malloc(k*k*sizeof(char));
-        //    }
-        //    MPI_Gatherv(grid, my_rows_number*k, MPI_CHAR, total_image, sendcounts, grid_displs, MPI_CHAR, 0, MPI_COMM_WORLD);
-        //        printf("now  i'm going to write the file\n");
-//
-        //       
-        //        char *file_path = (char*)malloc(32*sizeof(char) + 1);
-        //        strcpy(file_path, "files/static/");
-//
-        //        char *fname = (char*)malloc(20*sizeof(char) + 1);
-        //        snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-        //        printf("fname: %s\n", fname);
-//
-        //    
-        //        strcat(file_path, fname);
-        //        // print the file path
-        //        printf("file path: %s\n", file_path);
-        //        printf("address of file_path: %p\n", file_path);
-//
-        //        
-        //       
-//
-        //        write_pgm_image((void *)total_image, 255, k, k, file_path);
-//
-        //        free(fname);
-        //        free(file_path);
-        //    
-        //}
+        if ((step+1)%s==0){
+            char *file_path = (char*)malloc(32*sizeof(char) + 1);
+            strcpy(file_path, "files/static/");
+
+            char *fname = (char*)malloc(20*sizeof(char) + 1);
+            snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
+            strcat(file_path, fname);
+
+            parallel_write_MPI(grid, 255, file_path, k, my_rows_number, MPI_COMM_WORLD);
+    
+            free(fname);
+            free(file_path);  
+        }
 
     }    
     free(previous_row);
     free(next_row);
-    MPI_Finalize();
+    
     return;
 };

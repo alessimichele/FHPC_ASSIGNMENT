@@ -22,8 +22,8 @@ unsigned int* recoverSquare(int k, int index, int radius);
 void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, int s );
 void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int s, int rank, int size);
 void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s);
-void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process);
-
+void static_update_MPI(unsigned char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process);
+void parallel_write_MPI(unsigned char* grid, int maxval, char* filename, int k, int my_rows_number, MPI_Comm comm);
 
 /*
 ----------------------------------------------------------------------------------------------------------------
@@ -110,27 +110,28 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 */
 
 
-void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process){
+void static_update_MPI(unsigned char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process){
     
     MPI_Request request[4];  
-    char* previous_row = (char*)malloc(k*sizeof(char));
-    char* next_row = (char*)malloc(k*sizeof(char));
+    unsigned char* previous_row = (char*)malloc(k*sizeof(char));
+    unsigned char* next_row = (char*)malloc(k*sizeof(char));
 
     for (int step=0; step<n; step++){    
         
         int my_rows_number = (rank<(k%size)) ? rows_per_process+1 : rows_per_process;
-        //non blocking
-        //send the last row
-        MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[0]); //fix the tag 
+        //non blocking 
+        //send the last row, tag = step*size+rank
+        MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+rank, MPI_COMM_WORLD, &request[0]); 
         //send the first row
-        MPI_Isend(grid, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[1]); //fix the tag
+        MPI_Isend(grid, k, MPI_UNSIGNED_CHAR, (rank+size-1)%size, step*size+rank, MPI_COMM_WORLD, &request[1]); 
 
         //receive the last row
-        MPI_Irecv(previous_row, k, MPI_CHAR, (rank+size-1)%size, 0, MPI_COMM_WORLD, &request[2]);
+        MPI_Irecv(previous_row, k, MPI_UNSIGNED_CHAR, (rank+size-1)%size, step*size+(rank+size-1)%size, MPI_COMM_WORLD, &request[2]);
         //receive the first row
-        MPI_Irecv(next_row, k, MPI_CHAR, (rank+1)%size, 0, MPI_COMM_WORLD, &request[3]);
+        MPI_Irecv(next_row, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+(rank+1)%size, MPI_COMM_WORLD, &request[3]);
 
         MPI_Waitall(4, request, MPI_STATUS_IGNORE);
+      
         //update first row
         #pragma omp parallel
         {    
@@ -204,40 +205,21 @@ void static_update_MPI(char* grid, char* next, int k, int n, int s, int rank, in
         tmp = next;
         next = grid;
         grid = tmp;
-        printf("Rank %d has completed step %d.\n", rank, step);
+        //printf("Rank %d has completed step %d.\n", rank, step);        
         
-        //if ((step+1)%s==0)){
-        //    //let's write the file
-//
-        //    if(rank==0){
-        //        char* total_image = (char*)malloc(k*k*sizeof(char));
-        //    }
-        //    MPI_Gatherv(grid, my_rows_number*k, MPI_CHAR, total_image, sendcounts, grid_displs, MPI_CHAR, 0, MPI_COMM_WORLD);
-        //        printf("now  i'm going to write the file\n");
-//
-        //       
-        //        char *file_path = (char*)malloc(32*sizeof(char) + 1);
-        //        strcpy(file_path, "files/static/");
-//
-        //        char *fname = (char*)malloc(20*sizeof(char) + 1);
-        //        snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-        //        printf("fname: %s\n", fname);
-//
-        //    
-        //        strcat(file_path, fname);
-        //        // print the file path
-        //        printf("file path: %s\n", file_path);
-        //        printf("address of file_path: %p\n", file_path);
-//
-        //        
-        //       
-//
-        //        write_pgm_image((void *)total_image, 255, k, k, file_path);
-//
-        //        free(fname);
-        //        free(file_path);
-        //    
-        //}
+        if ((step+1)%s==0){
+            char *file_path = (char*)malloc(32*sizeof(char) + 1);
+            strcpy(file_path, "files/static/");
+
+            char *fname = (char*)malloc(20*sizeof(char) + 1);
+            snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
+            strcat(file_path, fname);
+
+            parallel_write_MPI(grid, 255, file_path, k, my_rows_number, MPI_COMM_WORLD);
+    
+            free(fname);
+            free(file_path);  
+        }
 
     }    
     free(previous_row);
@@ -517,6 +499,7 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
         
         // rank 0 compute the random cell index
         // randomly select one cell of the grid to be the source of the wave
+        printf("process %d is entering the step %d\n", rank, step);
         int rand_cell_idx;
         if (rank == 0){
             struct timeval time;
@@ -716,36 +699,111 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
    
 }
 
+/*
+----------------------------------------------------------------------------------------------------------------
+---------------------------------------------PARALLEL WRITE------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
+*/
+
+
+void parallel_write_MPI(unsigned char* grid, int maxval, char* filename, int k, int my_rows_number, MPI_Comm comm) {
+    
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+    MPI_Status status;
+    //initialize the variable header_offset in each process
+    MPI_Offset header_offset;
+    if (rank==0){
+        FILE* file_stream; 
+
+        file_stream = fopen(filename, "w+"); //file is going to be either created or overwritten,
+        // and the file pointer is positioned at the beginning of the file,
+        //so the function ftell will return 0, which is the initial position of the file pointer
+
+        int color_depth = 1 + ( maxval > 255 );
+        
+        if (file_stream != NULL){
+            fprintf(file_stream, "P5\n# generated by\n# Alessi Michele and Carollo Marco\n%d %d\n%d\n", k, k, maxval);
+            header_offset = ftell(file_stream);
+            fclose(file_stream); 
+        }else{
+            fprintf(stderr, "Failed to open the PGM file for writing.\n");
+        }
+    }
+    MPI_Barrier(comm);  
+    
+    MPI_File file;
+    MPI_File_open(comm, filename, MPI_MODE_WRONLY, MPI_INFO_NULL, &file);
+
+    // Now broadcast the initial position (from rank 0, that got it with ftell) to all other processes
+    MPI_Bcast(&header_offset, 1, MPI_OFFSET, 0, MPI_COMM_WORLD);
+    MPI_Barrier(comm);
+    //let's calculate the offset, first we need an array with the number of rows for each process
+    int* rows_per_process = (int*)malloc(size*sizeof(int));
+    for (int i=0; i<size; i++){
+        rows_per_process[i] = (i<(k%size)) ? k/size +1 : k/size;
+    }
+    int* offset_arr = (int*)malloc(size*sizeof(int));
+    offset_arr[0] = 0;
+    for (int i=1; i<size; i++){
+        offset_arr[i] = offset_arr[i-1] + rows_per_process[i-1]*k;
+    }
+    free(rows_per_process);
+
+    MPI_Offset offset = offset_arr[rank]*sizeof(unsigned char)+header_offset;
+
+    MPI_File_seek(file, offset, MPI_SEEK_SET);
+    MPI_Barrier(comm);
+    MPI_File_write(file, grid, my_rows_number * k, MPI_UNSIGNED_CHAR, &status);
+
+    MPI_File_close(&file);
+    free(offset_arr);
+    return;
+}
+
 
 /*
 ----------------------------------------------------------------------------------------------------------------
 --------------------------------------------- FAKE MAIN------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 */
-
-
 int main(){
     // initialize the grid
     int rank, size;
     MPI_Init(NULL, NULL);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    int k = 1000;
+    int k = 7;
+    if (k<size){
+        perror("number of processes must be smaller than k\n");
+        return 1;
+    }
    // unsigned char *grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
    // unsigned char *next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
     int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
     unsigned char *grid = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
     unsigned char *next = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
-    int n = 5;
+    int n = 10;
     int s = 1;
+    printf("nsteps: %d\n, k: %d\n", n, k);
     int rows_per_process = k/size; //da togliere
     // initialize the grid
+    unsigned int seed = clock();
+    seed = seed * rank;
     
+   
     for (int i=0; i<my_rows_number*k; i++){
-        grid[i] = rand()%2 * 255;
+        grid[i] = rand_r(&seed)%2 * 255;
     }
+    ////print the grid
+    //for (int i=0; i<my_rows_number; i++){
+    //    for (int j=0; j<k; j++){
+    //        printf("%d ", grid[i*k+j]);
+    //    }
+    //    printf("\n");
+    //}
 
-    
 
 
     //if (rank==0){
@@ -781,3 +839,4 @@ int main(){
 
     return 0;
 }
+
