@@ -117,15 +117,15 @@ void parallel_read( unsigned char **grid_pointer, int *maxval, int *xsize, int *
         m = fscanf(file_stream, "%2s%*c", MagicN );
         header_offset+=3; //+3 because of the \n
         // skip all the comments
-        printf("header offset dopo magic number: %lld\n", header_offset);
+        //printf("header offset dopo magic number: %lld\n", header_offset);
         m = getline( &line, &n, file_stream);
         header_offset+=m;
     
-        printf("header offset: %lld\n", header_offset);
+        //printf("header offset: %lld\n", header_offset);
         while ( (m > 0) && (line[0]=='#') ){
             m = getline( &line, &n, file_stream);
             header_offset+=m;   
-            printf("header offset dopo commenti: %lld\n", header_offset);
+            //printf("header offset dopo commenti: %lld\n", header_offset);
         }
         if (m > 0)
           {
@@ -154,7 +154,7 @@ void parallel_read( unsigned char **grid_pointer, int *maxval, int *xsize, int *
 
     // Now broadcast the initial position (from rank 0, that got it with ftell) to all other processes
     MPI_Bcast(&header_offset, 1, MPI_OFFSET, 0, MPI_COMM_WORLD);
-    printf("header offset: %lld\n", header_offset);
+    //printf("header offset: %lld\n", header_offset);
     //broadcast also xsize
     MPI_Bcast(xsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
     
