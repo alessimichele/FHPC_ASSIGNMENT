@@ -16,23 +16,12 @@
 ----------------------------------------------------------------------------------------------------------------
 */
 
-void wave_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int size, int rank){
-    /*
-    Wrapper function for the wave update
-
-    grid: pointer to the grid grid
-    next: pointer to the next grid
-    k: gride size
-    n: number of iterations to be calculated
-    s: every s-th iteration a dump of the grid is saved on a file
-    size: number of processes
-    rank: rank of the process
-    */
+void wave_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int my_rows_number){
 
     if (size == 1){
-        wave_update_OpenMP(grid, next, k, n, s);    
+        wave_update_OpenMP(grid, next, k, n, s, rank, size, my_rows_number);    
     }else{
-        wave_update_MPI(grid, next, k, n, s, size, rank);
+        wave_update_MPI(grid, next, k, n, s, size, rank, my_rows_number);
     }
     return;
 }
@@ -135,7 +124,7 @@ unsigned int* recoverSquare(int k, int index, int radius){
 ----------------------------------------------------------------------------------------------------------------
 */
 
-void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, int s ){
+void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, int s, int rank, int size, int my_rows_number){
     /*
     Function that updates the grid according to the wave rule.
 
@@ -286,21 +275,14 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
 
 
         if((step+1)%s==0){
-                //printf("now  i'm going to write the file\n");
-               
                 char *file_path = (char*)malloc(29*sizeof(char) + 1);
                 strcpy(file_path, "files/wave/");
 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
                 snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                //printf("fname: %s\n", fname);
-
                 strcat(file_path, fname);
-                // print the file path
-                //printf("file path: %s\n", file_path);
-                //printf("address of file_path: %p\n", file_path);
-
-                //write_pgm_image((void *)grid, 255, k, k, file_path);
+    
+                parallel_write(grid, 255, file_path, k, my_rows_number, rank, size, MPI_COMM_WORLD);
 
                 free(fname);
                 free(file_path);
@@ -317,7 +299,7 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
 ----------------------------------------------------------------------------------------------------------------
 */
 
-void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int s, int size, int rank){
+void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int s, int rank, int size, int my_rows_number){
     /*
     Function that updates the grid according to the wave rule, using MPI.
 
@@ -515,28 +497,22 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
 
         printf("step %d completed\n", step);
 
-        /*if (rank==0){
-            if((step+1)%s==0){
-                    //printf("now  i'm going to write the file\n");
-                
-                    char *file_path = (char*)malloc(29*sizeof(char) + 1);
-                    strcpy(file_path, "files/wave/");
+        
+        if((step+1)%s==0){
+                char *file_path = (char*)malloc(29*sizeof(char) + 1);
+                strcpy(file_path, "files/wave/");
 
-                    char *fname = (char*)malloc(20*sizeof(char) + 1);
-                    snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                    //printf("fname: %s\n", fname);
+                char *fname = (char*)malloc(20*sizeof(char) + 1);
+                snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
 
-                    strcat(file_path, fname);
-                    // print the file path
-                    //printf("file path: %s\n", file_path);
-                    //printf("address of file_path: %p\n", file_path);
+                strcat(file_path, fname);
 
-                    write_pgm_image((void *)grid, 255, k, k, file_path);
+                parallel_write(grid, 255, file_path, k, my_rows_number, rank, size, MPI_COMM_WORLD);
 
-                    free(fname);
-                    free(file_path);
-                } 
-        }*/
+                free(fname);
+                free(file_path);
+            } 
+        
 
     } // end of iteration over step
 
