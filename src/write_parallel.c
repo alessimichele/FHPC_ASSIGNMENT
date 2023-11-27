@@ -160,7 +160,7 @@ void read_pgm_image( void **grid, int *maxval, int *xsize, int *ysize,  char *fi
 }
 
 
-void parallel_read_MPI( void **grid, int *maxval, int *xsize, int *ysize,  char *file_name, int my_rows_number, MPI_Comm comm) {
+void parallel_read_MPI( void **grid_pointer, int *maxval, int *xsize, int *ysize,  char *file_name, int my_rows_number, MPI_Comm comm) {
     
     int rank, size;
     MPI_Comm_rank(comm, &rank);
@@ -177,22 +177,22 @@ void parallel_read_MPI( void **grid, int *maxval, int *xsize, int *ysize,  char 
         
         char    MagicN[2];
         char   *line = NULL;
-        size_t  k, n = 0;
+        size_t  m, n = 0; // m is the number of characters read, n is the size of the buffer
         
         // get the Magic Number
-        k = fscanf(file_stream, "%2s%*c", MagicN );
-        header_offset+=k+1; //+1 because of the \n
+        m = fscanf(file_stream, "%2s%*c", MagicN );
+        header_offset+=m+1; //+1 because of the \n
         // skip all the comments
-        k = getline( &line, &n, file_stream);
-        header_offset+=k;
-        while ( (k > 0) && (line[0]=='#') )
-            k = getline( &line, &n, file_stream);
-            header_offset+=k;   
-        if (k > 0)
+        m = getline( &line, &n, file_stream);
+        header_offset+=m;
+        while ( (m > 0) && (line[0]=='#') )
+            m = getline( &line, &n, file_stream);
+            header_offset+=m;   
+        if (m > 0)
           {
-            k = sscanf(line, "%d%*c%d%*c%d%*c", xsize, ysize, maxval);
+            m = sscanf(line, "%d%*c%d%*c%d%*c", xsize, ysize, maxval);
             //maybe fix HEADER_OFFSET
-            if ( k < 3 )
+            if ( m < 3 )
         	fscanf(file_stream, "%d%*c", maxval);
           }
         else
@@ -214,19 +214,31 @@ void parallel_read_MPI( void **grid, int *maxval, int *xsize, int *ysize,  char 
     MPI_Bcast(&header_offset, 1, MPI_OFFSET, 0, MPI_COMM_WORLD);
     //broadcast also xsize
     MPI_Bcast(xsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    
+    *grid_pointer = (unsigned char*)malloc(*xsize*my_rows_number*sizeof(unsigned char));
     MPI_Barrier(comm);
     //let's calculate the offset, first we need an array with the number of rows for each process
     int* rows_per_process = (int*)malloc(size*sizeof(int));
     for (int i=0; i<size; i++){
-        rows_per_process[i] = (i<(k%size)) ? k/size +1 : k/size;
+        rows_per_process[i] = (i<(*xsize%size)) ? *xsize/size +1 : *xsize/size;
     }
     int* offset_arr = (int*)malloc(size*sizeof(int));
     offset_arr[0] = 0;
     for (int i=1; i<size; i++){
-        offset_arr[i] = offset_arr[i-1] + rows_per_process[i-1]*k;
+        offset_arr[i] = offset_arr[i-1] + rows_per_process[i-1]*(*xsize);
     }
     free(rows_per_process);
 
-    MPI
+    MPI_Offset offset = offset_arr[rank]*sizeof(unsigned char)+header_offset;
+
+    MPI_File_seek(file, offset, MPI_SEEK_SET);
+    MPI_Barrier(comm);
+    MPI_File_read(file, *grid_pointer, my_rows_number * (*xsize), MPI_UNSIGNED_CHAR, &status);
+
+
+    MPI_File_close(&file);
+    free(offset_arr);
+
+    return;
 
 }

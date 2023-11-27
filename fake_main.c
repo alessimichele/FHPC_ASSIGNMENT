@@ -24,7 +24,7 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
 void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s);
 void static_update_MPI(unsigned char* grid, char* next, int k, int n, int s, int rank, int size, int rows_per_process);
 void parallel_write_MPI(unsigned char* grid, int maxval, char* filename, int k, int my_rows_number, MPI_Comm comm);
-
+void parallel_read_MPI( unsigned char **grid_pointer, int *maxval, int *xsize, int *ysize,  char *file_name, int my_rows_number, MPI_Comm comm);
 /*
 ----------------------------------------------------------------------------------------------------------------
 ---------------------------------------------STATIC OpenMP------------------------------------------------------------
@@ -839,20 +839,20 @@ int main(){
     //    }
     //    printf("\n");
     //}
-    char *fname = (char*)malloc(strlen("init_prova.pgm")*sizeof(char) + 1);
-    strcpy(fname, "init_prova.pgm");
-    char *path = (char*)malloc(11*sizeof(char) + 1);
-    strcpy(path, "files/init/");
-    char *file_path = (char*)malloc((strlen(path) + strlen(fname))*sizeof(char) + 1);
-    strcpy(file_path, path);
+    //char *fname = (char*)malloc(strlen("init_prova.pgm")*sizeof(char) + 1);
+    //strcpy(fname, "init_prova.pgm");
+    //char *path = (char*)malloc(11*sizeof(char) + 1);
+    //strcpy(path, "files/init/");
+    //char *file_path = (char*)malloc((strlen(path) + strlen(fname))*sizeof(char) + 1);
+    //strcpy(file_path, path);
   
-    if (fname != NULL) {
-        strcat(file_path, fname);
-    } else {
-        perror("Filename is not provided. Please provide a filename with -f option. This will be the name of the file containing the initial grid.\n");
-        return 1; // return with error code
-    }
-    init_parallel(file_path, k, rank, size);
+    //if (fname != NULL) {
+    //    strcat(file_path, fname);
+    //} else {
+    //    perror("Filename is not provided. Please provide a filename with -f option. This will be the name of the file containing the initial grid.\n");
+    //    return 1; // return with error code
+    //}
+    //init_parallel(file_path, k, rank, size);
 
     //if (rank==0){
     //    for (int i=0; i<k*k; i++){
@@ -862,9 +862,20 @@ int main(){
     //// broadcast the grid
     //MPI_Bcast(grid, k*k, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
     
+    unsigned char* grid;
+    int maxval, xsize, ysize;
+    int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
 
-
-
+    parallel_read_MPI(&grid, &maxval, &xsize, &ysize, "files/init/init_prova.pgm", my_rows_number, MPI_COMM_WORLD);
+    //print the current rank and grid
+    printf("Rank %d\n", rank);
+    for (int i=0; i<my_rows_number; i++){
+        for (int j=0; j<k; j++){
+            printf("%d ", grid[i*k+j]);
+        }
+        printf("\n");
+    }
+    free(grid);
     clock_t start, end;
     double cpu_time_used;
 
@@ -888,3 +899,96 @@ int main(){
     return 0;
 }
 
+
+
+void parallel_read_MPI( unsigned char **grid_pointer, int *maxval, int *xsize, int *ysize,  char *file_name, int my_rows_number, MPI_Comm comm) {
+    
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+    MPI_Status status;
+    //initialize the variable header_offset in each process
+    MPI_Offset header_offset;
+    if (rank==0){
+       
+        FILE* file_stream; 
+        file_stream = fopen(file_name, "r"); 
+        
+        *xsize = *ysize = *maxval = 0;
+        
+        char    MagicN[2];
+        char   *line = NULL;
+        size_t  m, n = 0; // m is the number of characters read, n is the size of the buffer
+        
+        // get the Magic Number
+        m = fscanf(file_stream, "%2s%*c", MagicN );
+        header_offset+=3; //+3 because of the \n
+        // skip all the comments
+        printf("header offset dopo magic number: %lld\n", header_offset);
+        m = getline( &line, &n, file_stream);
+        header_offset+=m;
+    
+        printf("header offset: %lld\n", header_offset);
+        while ( (m > 0) && (line[0]=='#') ){
+            m = getline( &line, &n, file_stream);
+            header_offset+=m;   
+            printf("header offset dopo commenti: %lld\n", header_offset);
+        }
+        if (m > 0)
+          {
+            m = sscanf(line, "%d%*c%d%*c%d%*c", xsize, ysize, maxval);
+            //maybe fix HEADER_OFFSET
+            if ( m < 3 ){
+                m = getline(&line,&n,file_stream);
+                header_offset+=m;
+                sscanf(line, "%d%*c", maxval);
+            }
+          }
+        else
+          {
+            *maxval = -1;         // this is the signal that there was an I/O error
+        			    // while reading the grid header
+            free( line );
+            return;
+          }
+        free( line );
+        
+    }
+    MPI_Barrier(comm);  
+    
+    MPI_File file;
+    MPI_File_open(comm, file_name, MPI_MODE_RDONLY, MPI_INFO_NULL, &file);
+
+    // Now broadcast the initial position (from rank 0, that got it with ftell) to all other processes
+    MPI_Bcast(&header_offset, 1, MPI_OFFSET, 0, MPI_COMM_WORLD);
+    printf("header offset: %lld\n", header_offset);
+    //broadcast also xsize
+    MPI_Bcast(xsize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    
+    *grid_pointer = (unsigned char*)malloc(*xsize*my_rows_number*sizeof(unsigned char));
+    MPI_Barrier(comm);
+    //let's calculate the offset, first we need an array with the number of rows for each process
+    int* rows_per_process = (int*)malloc(size*sizeof(int));
+    for (int i=0; i<size; i++){
+        rows_per_process[i] = (i<(*xsize%size)) ? *xsize/size +1 : *xsize/size;
+    }
+    int* offset_arr = (int*)malloc(size*sizeof(int));
+    offset_arr[0] = 0;
+    for (int i=1; i<size; i++){
+        offset_arr[i] = offset_arr[i-1] + rows_per_process[i-1]*(*xsize);
+    }
+    free(rows_per_process);
+
+    MPI_Offset offset = offset_arr[rank]*sizeof(unsigned char)+header_offset;
+
+    MPI_File_seek(file, offset, MPI_SEEK_SET);
+    MPI_Barrier(comm);
+    MPI_File_read(file, *grid_pointer, my_rows_number * (*xsize), MPI_UNSIGNED_CHAR, &status);
+
+
+    MPI_File_close(&file);
+    
+    free(offset_arr);
+
+    return;
+}
