@@ -104,6 +104,7 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
 
     for (int step=0; step<n; step++){    
         
+        
         //non blocking 
         //send the last row, tag = step*size+rank
         MPI_Isend(grid+(my_rows_number-1)*k, k, MPI_UNSIGNED_CHAR, (rank+1)%size, step*size+rank, MPI_COMM_WORLD, &request[0]); 
@@ -190,9 +191,12 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
         tmp = next;
         next = grid;
         grid = tmp;
-        //printf("Rank %d has completed step %d.\n", rank, step);        
+        printf("Rank %d has completed step %d.\n", rank, step);    
+
+        if(rank==0)printf("s: %d\n", s);
         
         if ((step+1)%s==0){
+            printf("now  i'm going to write the file\n");
             char *file_path = (char*)malloc(32*sizeof(char) + 1);
             strcpy(file_path, "files/static/");
 

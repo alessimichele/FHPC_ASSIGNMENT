@@ -60,7 +60,7 @@ void ordered_update(unsigned char* grid, int k, int n, int s){
                 //printf("file path: %s\n", file_path);
                 //printf("address of file_path: %p\n", file_path);
 
-                write_pgm_image((void *)grid, 255, k, k, file_path);
+                //write_pgm_image((void *)grid, 255, k, k, file_path);
 
                 free(fname);
                 free(file_path);
