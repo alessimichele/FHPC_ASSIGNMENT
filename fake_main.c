@@ -762,6 +762,42 @@ void parallel_write_MPI(unsigned char* grid, int maxval, char* filename, int k, 
     return;
 }
 
+/*----------------------------------------------------------------------------------------------------------------
+---------------------------------------------INITIALIZE GRID------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
+*/
+
+
+void init_parallel(char *file_name, int k, int rank, int size){
+
+    int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
+    unsigned char *grid = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
+    
+    if (grid == NULL) {
+      perror("Memory allocation error");
+      return;
+    }
+
+    unsigned int seed = clock();
+    seed = seed * rank;
+   
+    for (int i=0; i<my_rows_number*k; i++){
+        grid[i] = rand_r(&seed)%2 * 255;
+    }
+    ////print the grid
+    //for (int i=0; i<my_rows_number; i++){
+    //    for (int j=0; j<k; j++){
+    //        printf("%d ", grid[i*k+j]);
+    //    }
+    //    printf("\n");
+    //}
+
+    parallel_write_MPI(grid, 255, file_name, k, my_rows_number, MPI_COMM_WORLD);
+    free(grid);
+    return;
+}
+
+
 
 /*
 ----------------------------------------------------------------------------------------------------------------
@@ -775,27 +811,27 @@ int main(){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     int k = 7;
-    if (k<size){
-        perror("number of processes must be smaller than k\n");
-        return 1;
-    }
+    //if (k<size){
+    //    perror("number of processes must be smaller than k\n");
+    //    return 1;
+    //}
    // unsigned char *grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
    // unsigned char *next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
-    int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
-    unsigned char *grid = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
-    unsigned char *next = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
-    int n = 10;
-    int s = 1;
-    printf("nsteps: %d\n, k: %d\n", n, k);
-    int rows_per_process = k/size; //da togliere
-    // initialize the grid
-    unsigned int seed = clock();
-    seed = seed * rank;
-    
-   
-    for (int i=0; i<my_rows_number*k; i++){
-        grid[i] = rand_r(&seed)%2 * 255;
-    }
+    //int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
+    //unsigned char *grid = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
+    //unsigned char *next = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
+    //int n = 10;
+    //int s = 1;
+    //printf("nsteps: %d\n, k: %d\n", n, k);
+    //int rows_per_process = k/size; //da togliere
+    //// initialize the grid
+    //unsigned int seed = clock();
+    //seed = seed * rank;
+    //
+   //
+    //for (int i=0; i<my_rows_number*k; i++){
+    //    grid[i] = rand_r(&seed)%2 * 255;
+    //}
     ////print the grid
     //for (int i=0; i<my_rows_number; i++){
     //    for (int j=0; j<k; j++){
@@ -803,8 +839,20 @@ int main(){
     //    }
     //    printf("\n");
     //}
-
-
+    char *fname = (char*)malloc(strlen("init_prova.pgm")*sizeof(char) + 1);
+    strcpy(fname, "init_prova.pgm");
+    char *path = (char*)malloc(11*sizeof(char) + 1);
+    strcpy(path, "files/init/");
+    char *file_path = (char*)malloc((strlen(path) + strlen(fname))*sizeof(char) + 1);
+    strcpy(file_path, path);
+  
+    if (fname != NULL) {
+        strcat(file_path, fname);
+    } else {
+        perror("Filename is not provided. Please provide a filename with -f option. This will be the name of the file containing the initial grid.\n");
+        return 1; // return with error code
+    }
+    init_parallel(file_path, k, rank, size);
 
     //if (rank==0){
     //    for (int i=0; i<k*k; i++){
@@ -823,7 +871,7 @@ int main(){
     start = omp_get_wtime();
 
     //wave_update_MPI(grid, next,k, n,  s, rank, size);
-    static_update_MPI(grid, next, k, n, s, rank, size, rows_per_process);
+    //static_update_MPI(grid, next, k, n, s, rank, size, rows_per_process);
     
     // wave_update_OpenMP(grid, next, k, n, s);
     // static_update_OpenMP(grid, next, k, n, s);
@@ -832,8 +880,8 @@ int main(){
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
     printf("Time took %f seconds to execute \n", cpu_time_used);
-    free(grid);
-    free(next);
+    //free(grid);
+    //free(next);
     
     MPI_Finalize();
 
