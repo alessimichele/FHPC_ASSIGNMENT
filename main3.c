@@ -69,10 +69,10 @@ int main ( int argc, char **argv ){
     printf("s: %d\n", s);
 
     if (s==0){
-        s = n;
+        s = n; // print last step
     }
 
-    printf("k: %d\nn: %d\ns: %d\n", k, n, s);
+    printf("Grid size: %d\nNumber of step: %d\nSnapshot Frequency: %d\nUpdate mode: %d\n", k, n, s, e);
 
     printf("fname: %s\n", fname);
 
@@ -94,7 +94,7 @@ int main ( int argc, char **argv ){
     MPI_Comm_rank( comm,&rank );
     MPI_Comm_size( comm,&size );
 
-    int my_rows_number = (rank<(k%size)) ? k/size+1 : k/size;
+    int my_rows_number = (rank<(k%size)) ? k/size + 1 : k/size;
 
     if (action == INIT){
 
@@ -109,7 +109,7 @@ int main ( int argc, char **argv ){
             return 1; 
         }
 
-        if (file_path==NULL){ // questo penso si possa togliere... il punto sarebbe checkare che il file esista
+        if (file_path==NULL){ // questo penso si possa togliere... il punto sarebbe checkare che il file esista :)
             if(rank==0)fprintf(stderr,"Initial grid not found. Please run with -i for initialization.");
             return 1;
         }
@@ -123,7 +123,7 @@ int main ( int argc, char **argv ){
         if (e == ORDERED){
 
             if(rank==0)printf("Run in order mode.\n");
-            ordered_update(partial_grid, k, n, s);
+            ordered_update(partial_grid, k, n, s, rank, size, my_rows_number);
             if(rank==0)printf("Done!\n");
 
         }else if (e == STATIC){
@@ -134,17 +134,25 @@ int main ( int argc, char **argv ){
             free(next);
             if(rank==0)printf("Done!\n");
 
-        //}else if (e == WAVE){
-//
-        //    if(rank==0)printf("Run in wave mode.\n");
-        //    
-        //    unsigned char* grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
-        //    ///MPI_Allgatherv !!!!!
-        //    unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
-        //    wave_update(grid, next, k, n, s, size, rank);
-        //    if(rank==0)printf("Done!\n");
-        //    free(next);
-//
+        }else if (e == WAVE){
+
+            if(rank==0)printf("Run in wave mode.\n");
+            
+            unsigned char* grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
+            int *recvcounts = (int*)malloc(size*sizeof(int));
+            int *displs = (int*)malloc(size*sizeof(int));
+            for(int i=0; i<size; i++){
+                recvcounts[i] = (i<(k%size)) ? k/size + 1 : k/size;
+                recvcounts[i] *= k;
+                displs[i] = (i==0) ? 0 : displs[i-1] + recvcounts[i-1];
+            }
+            MPI_Allgatherv(partial_grid, k*my_rows_number, MPI_UNSIGNED_CHAR, grid, recvcounts, displs, MPI_UNSIGNED_CHAR, MPI_COMM_WORLD);
+            unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
+            wave_update(grid, next, k, n, s, rank, size, my_rows_number);
+            if(rank==0)printf("Done!\n");
+            free(next);
+            free(grid);
+
         }else{
             fprintf(stderr, "Please provide a valid execution mode. Either -e 0 for ordered, -e 1 for static or -e 2 for wave.\n");
         }
