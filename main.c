@@ -13,6 +13,7 @@
 
 #define INIT 1
 #define RUN  2
+#define CPU_TIME (clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &ts ), (double)ts.tv_sec + (double)ts.tv_nsec * 1e-9);
 
 #define K_DFLT 1000
 
@@ -66,15 +67,12 @@ int main ( int argc, char **argv ){
         }
     }
 
-    printf("s: %d\n", s);
-
     if (s==0){
         s = n; // print last step
     }
 
-    printf("Grid size: %d\nNumber of step: %d\nSnapshot Frequency: %d\nUpdate mode: %d\n", k, n, s, e);
-
-    printf("fname: %s\n", fname);
+  
+    
 
     if(fname == NULL){
         fprintf(stderr, "Filename is not provided. Please provide a filename with -f option. This will be the name of the file containing the initial grid.\n");
@@ -86,7 +84,7 @@ int main ( int argc, char **argv ){
     strcpy(file_path, "./files/init/");
     strcat(file_path, fname);
 
-    printf("file_path: %s\n", file_path);
+
 
     int rank, size;
     MPI_Init( NULL, NULL );
@@ -96,11 +94,27 @@ int main ( int argc, char **argv ){
 
     int my_rows_number = (rank<(k%size)) ? k/size + 1 : k/size;
 
+    int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+
+
     if (action == INIT){
 
-        if(rank==0)printf("Initializing...\n");
+        if(rank==0)printf("mode,size,nthreads,k,time\n");
+        double t_init;
+        MPI_Barrier(MPI_COMM_WORLD);
+        if(rank==0)t_init = omp_get_wtime();
         init_parallel(file_path, k, rank, size, my_rows_number);
-        if(rank==0)printf("Initialization done!\n");
+        MPI_Barrier(MPI_COMM_WORLD);
+        if(rank==0){t_init = omp_get_wtime() - t_init;
+            printf("i,%d,%d,%d,%lf\n", size, nthreads, k, t_init);
+        }
 
     }else{  
 
@@ -108,55 +122,62 @@ int main ( int argc, char **argv ){
             if(rank==0)fprintf(stderr, "Please provide an action. Either -i for initialization or -r for running the simulation.\n");
             return 1; 
         }
-
-        if (file_path==NULL){ // questo penso si possa togliere... il punto sarebbe checkare che il file esista :)
-            if(rank==0)fprintf(stderr,"Initial grid not found. Please run with -i for initialization.");
-            return 1;
-        }
     
         unsigned char *partial_grid;
         int maxval, xsize, ysize;
+        if(rank==0)printf("mode,size,nthreads,k,time\n");
+        double t_read;
+        if (rank==0)t_read = omp_get_wtime();
         parallel_read(&partial_grid, &maxval, &xsize, &ysize, file_path, my_rows_number, rank, size, comm); // !!!!!!
-        
-        if(rank==0)printf("The initial grid has been read.\n");
+        if(rank == 0){t_read = omp_get_wtime() - t_read;
+            printf("re,%d,%d,%d,%lf\n", size, nthreads, k, t_read);
+        }
+
 
         if (e == ORDERED){
 
-            if(rank==0)printf("Run in order mode.\n");
+            //if(rank==0)printf("Run in order mode.\n");
             ordered_update(partial_grid, k, n, s, rank, size, my_rows_number);
-            if(rank==0)printf("Done!\n");
+            //if(rank==0)printf("Done!\n");
 
         }else if (e == STATIC){
 
-            if(rank==0)printf("Run in static mode.\n");
+            //if(rank==0)printf("Run in static mode.\n");
             unsigned char* next = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
             static_update(partial_grid, next, k, n, s, rank, size, my_rows_number);
             free(next);
-            if(rank==0)printf("Done!\n");
+            //if(rank==0)printf("Done!\n");
 
         }else if (e == WAVE){
 
-            if(rank==0)printf("Run in wave mode.\n");
-            
+            //if(rank==0){printf("Run in wave mode.\n");}
             unsigned char* grid = (unsigned char*)malloc(k*k*sizeof(unsigned char));
-            int *recvcounts = (int*)malloc(size*sizeof(int));
-            int *displs = (int*)malloc(size*sizeof(int));
+            int *recvcountsgather = (int*)malloc(size*sizeof(int));
+            int *displsgather = (int*)malloc(size*sizeof(int));
             for(int i=0; i<size; i++){
-                recvcounts[i] = (i<(k%size)) ? k/size + 1 : k/size;
-                recvcounts[i] *= k;
-                displs[i] = (i==0) ? 0 : displs[i-1] + recvcounts[i-1];
+                recvcountsgather[i] = (i<(k%size)) ? k/size + 1 : k/size;
+                recvcountsgather[i] = recvcountsgather[i]*k;
+                displsgather[i] = (i==0) ? 0 : displsgather[i-1] + recvcountsgather[i-1];
             }
-            MPI_Allgatherv(partial_grid, k*my_rows_number, MPI_UNSIGNED_CHAR, grid, recvcounts, displs, MPI_UNSIGNED_CHAR, MPI_COMM_WORLD);
-            unsigned char* next = (unsigned char*)calloc(k*k*sizeof(unsigned char), sizeof(unsigned char));
+            MPI_Barrier(MPI_COMM_WORLD);
+            
+            MPI_Allgatherv(partial_grid, k*my_rows_number, MPI_UNSIGNED_CHAR, grid, recvcountsgather, displsgather, MPI_UNSIGNED_CHAR, MPI_COMM_WORLD);
+            
+            unsigned char* next = (unsigned char*)malloc(k*k*sizeof(unsigned char));
             wave_update(grid, next, k, n, s, rank, size, my_rows_number);
-            if(rank==0)printf("Done!\n");
+            
             free(next);
             free(grid);
+            free(recvcountsgather);
+            free(displsgather);
+            //if(rank==0){printf("Done!\n");}
 
         }else{
             fprintf(stderr, "Please provide a valid execution mode. Either -e 0 for ordered, -e 1 for static or -e 2 for wave.\n");
         }
+        
         free(partial_grid);
+    
     }
 
     free(file_path);

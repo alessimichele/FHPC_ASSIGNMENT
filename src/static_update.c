@@ -28,8 +28,20 @@ void static_update(unsigned char *grid, unsigned char* next, int k,  int n,  int
 }
 
 void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int n,  int s, int rank, int size, int my_rows_number){
+    int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
     
-    // OpenMP implementation upon one process
+
+    double t_static = omp_get_wtime();
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_static = omp_get_wtime();}
+
     for (int step=0; step<n; step++){
         int nthreads;
         #pragma omp parallel
@@ -70,28 +82,14 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
         grid=tmp;
 
 
-        if((step+1)%s==0){
-                printf("now  i'm going to write the file\n");
-                //print the grid
-                for (int i=0; i<k; i++){
-                    for (int j=0; j<k; j++){
-                        printf("%d ", grid[i*k+j]);
-                    }
-                    printf("\n");
-                }
-               
+        if((step+1)%s==0){   
                 char *file_path = (char*)malloc(32*sizeof(char) + 1);
                 strcpy(file_path, "files/static/");
 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
                 snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
-                printf("fname: %s\n", fname);
-                
             
                 strcat(file_path, fname);
-                // print the file path
-                printf("file path: %s\n", file_path);
-                printf("address of file_path: %p\n", file_path);
 
                 parallel_write(grid, 255, file_path, k, k, 0, 1, MPI_COMM_WORLD);
 
@@ -99,14 +97,31 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
                 free(file_path);
             }
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_static = omp_get_wtime() - t_static;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_static);
+    }
 };
 
 
 void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, int s, int rank, int size, int my_rows_number){
+    int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
     
     MPI_Request request[4];  
     unsigned char* previous_row = (unsigned char*)malloc(k*sizeof(unsigned char));
     unsigned char* next_row = (unsigned char*)malloc(k*sizeof(unsigned char));
+
+    double t_static;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_static = omp_get_wtime();}
 
     for (int step=0; step<n; step++){    
         
@@ -196,19 +211,12 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
         unsigned char* tmp;
         tmp = next;
         next = grid;
-        grid = tmp;
-        printf("Rank %d has completed step %d.\n", rank, step);    
+        grid = tmp;  
 
-        if(rank==0)printf("s: %d\n", s);
+        //if(rank==0)printf("s: %d\n", s);
         
         if ((step+1)%s==0){
-            // print the current grid
-            for (int i=0; i<my_rows_number; i++){
-                for (int j=0; j<k; j++){
-                    printf("%d ", grid[i*k+j]);
-                }
-                printf("\n");
-            }
+            
             char *file_path = (char*)malloc(32*sizeof(char) + 1);
             strcpy(file_path, "files/static/");
 
@@ -226,6 +234,11 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
     }    
     free(previous_row);
     free(next_row);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_static = omp_get_wtime() - t_static;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_static);
+    }
     
     return;
 };
