@@ -72,7 +72,13 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
 
         if((step+1)%s==0){
                 printf("now  i'm going to write the file\n");
-
+                //print the grid
+                for (int i=0; i<k; i++){
+                    for (int j=0; j<k; j++){
+                        printf("%d ", grid[i*k+j]);
+                    }
+                    printf("\n");
+                }
                
                 char *file_path = (char*)malloc(32*sizeof(char) + 1);
                 strcpy(file_path, "files/static/");
@@ -80,7 +86,7 @@ void static_update_OpenMP(unsigned char *grid, unsigned char* next, int k,  int 
                 char *fname = (char*)malloc(20*sizeof(char) + 1);
                 snprintf(fname, 20, "snapshot_%05d.pgm", step+1);
                 printf("fname: %s\n", fname);
-
+                
             
                 strcat(file_path, fname);
                 // print the file path
@@ -196,6 +202,13 @@ void static_update_MPI(unsigned char* grid, unsigned char* next, int k, int n, i
         if(rank==0)printf("s: %d\n", s);
         
         if ((step+1)%s==0){
+            // print the current grid
+            for (int i=0; i<my_rows_number; i++){
+                for (int j=0; j<k; j++){
+                    printf("%d ", grid[i*k+j]);
+                }
+                printf("\n");
+            }
             char *file_path = (char*)malloc(32*sizeof(char) + 1);
             strcpy(file_path, "files/static/");
 
