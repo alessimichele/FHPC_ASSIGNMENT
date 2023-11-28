@@ -21,7 +21,7 @@ void wave_update(unsigned char *grid, unsigned char* next, int k,  int n,  int s
     if (size == 1){
         wave_update_OpenMP(grid, next, k, n, s, rank, size, my_rows_number);    
     }else{
-        wave_update_MPI(grid, next, k, n, s, size, rank, my_rows_number);
+        wave_update_MPI(grid, next, k, n, s, rank, size, my_rows_number);
     }
     return;
 }
@@ -42,6 +42,7 @@ int map_even_grid(int rand_cell_idx, int k){
     rand_cell_idx: index of the cell that is the source of the wave
     k: grid size
     */
+   
     if (k%2 !=0 ){
         perror("Something went wrong, this function should be called only when k is even.\n");
     }
@@ -104,7 +105,7 @@ unsigned int* recoverSquare(int k, int index, int radius){
     }
 
     // sort the idxs array
-    for (int i=0; i<tmp; i++){
+    /*for (int i=0; i<tmp; i++){
         for (int j=i+1; j<tmp; j++){
             if (indxs[i] > indxs[j]){
                 int tmp = indxs[i];
@@ -112,9 +113,15 @@ unsigned int* recoverSquare(int k, int index, int radius){
                 indxs[j] = tmp;
             }
         }
-    }
+    }*/
+
+    qsort(indxs, tmp, sizeof(unsigned int), cmpfunc);
 
     return indxs;
+}
+
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
 }
 
 
@@ -136,6 +143,19 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
     */
 
     //printf("entered wave update\n");
+    int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+
+
+    double t_wave;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_wave = omp_get_wtime();}
 
     // iterate over the step
     for(int step=0; step<n; step++){
@@ -161,7 +181,7 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
             if (idxs==NULL){
                 // go to next iteration of the outer outer loop (the one with step)
                 // if code works properly, this should never happen
-                printf("idxs is NULL... something is going wrong, check it please.\n");
+                //printf("idxs is NULL... something is going wrong, check it please.\n");
                 continue;
             }
 
@@ -271,7 +291,7 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
             } // end of the parallel region 
         } // end of the flag
 
-        printf("step %d completed\n", step);
+        //printf("step %d completed\n", step);
 
 
         if((step+1)%s==0){
@@ -288,6 +308,11 @@ void wave_update_OpenMP(unsigned char* grid, unsigned char* next, int k, int n, 
                 free(file_path);
             } 
     } // end of iteration over step
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_wave = omp_get_wtime() - t_wave;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_wave);
+    }
 
     return;
 };
@@ -309,13 +334,23 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
     n: number of iterations to be calculated
     s: every s-th iteration a dump of the grid is saved on a file
     */
+   int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+
+    double t_wave;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_wave = omp_get_wtime();}
 
     // iterate over the step
     for (int step=0; step<n; step++){
 
-        if (rank==0 && step%10==0){
-            printf("----------------Step %d--------------\n", step);       
-        }
+       
         
         // rank 0 compute the random cell index
         // randomly select one cell of the grid to be the source of the wave
@@ -495,7 +530,7 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
             MPI_Barrier(MPI_COMM_WORLD); // wait for all processes to get the updated grid
         } // end of the flag
 
-        printf("step %d completed\n", step);
+      
 
         
         if((step+1)%s==0){
@@ -516,6 +551,11 @@ void wave_update_MPI(unsigned char *grid, unsigned char* next, int k, int n, int
 
     } // end of iteration over step
 
-     printf("Rank %d has completed all the steps.\n", rank);
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_wave = omp_get_wtime() - t_wave;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_wave);
+    }
+
+    
     return;
 }

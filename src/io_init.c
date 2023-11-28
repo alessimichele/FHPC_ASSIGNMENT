@@ -24,6 +24,7 @@
 
 void parallel_write(unsigned char* grid, int maxval, char* file_path, int k, int my_rows_number, int rank, int size, MPI_Comm comm) {
     
+
     MPI_Status status;
     //initialize the variable header_offset in each process
     MPI_Offset header_offset;
@@ -72,6 +73,8 @@ void parallel_write(unsigned char* grid, int maxval, char* file_path, int k, int
 
     MPI_File_close(&file);
     free(offset_arr);
+
+    
     return;
 }
 

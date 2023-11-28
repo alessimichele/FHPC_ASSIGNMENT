@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mpi.h>
+#include <omp.h>
 #include "ordered_update.h"
 #include "io_init.h"
 
@@ -25,6 +27,18 @@ void ordered_update_OpenMP(unsigned char* grid, int k, int n, int s, int rank, i
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
+   int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+
+    double t_ordered;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_ordered = omp_get_wtime();}
 
     for (int step = 0; step < n; step++){   
         #pragma omp parallel for ordered
@@ -61,6 +75,11 @@ void ordered_update_OpenMP(unsigned char* grid, int k, int n, int s, int rank, i
             free(file_path);
         }    
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_ordered = omp_get_wtime() - t_ordered;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_ordered);
+    }
     return;
 }
 
@@ -77,9 +96,22 @@ void ordered_update_MPI(unsigned char* grid, int k, int n, int s, int rank, int 
     s: int, every how many steps a dump of the system is saved on a file
         (0 meaning only at the end)
     */
+   int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+
+    double t_ordered;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_ordered = omp_get_wtime();}
+
  
     unsigned char* previous_row = (unsigned char*)malloc(k*sizeof(unsigned char));
-  
+    
     for (int step=0; step<n;step++){
         MPI_Status status;
         // last process send to first process its last row
@@ -168,6 +200,11 @@ void ordered_update_MPI(unsigned char* grid, int k, int n, int s, int rank, int 
             free(file_path);  
         }
         free(previous_row);
+    }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_ordered = omp_get_wtime() - t_ordered;
+        printf("r,%d,%d,%d,%lf\n", size, nthreads, k, t_ordered);
     }
     return;
 }
