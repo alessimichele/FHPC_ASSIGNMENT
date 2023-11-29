@@ -81,6 +81,18 @@ void parallel_write(unsigned char* grid, int maxval, char* file_path, int k, int
 
 void init_parallel(char *file_path, int k, int rank, int size, int my_rows_number){
 
+    int nthreads;
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            nthreads = omp_get_num_threads();
+        }
+    }
+    
+    double t_init;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0)t_init = omp_get_wtime();
     unsigned char *partial_grid = (unsigned char*)malloc(k*my_rows_number*sizeof(unsigned char));
     
     if (partial_grid == NULL) {
@@ -95,7 +107,21 @@ void init_parallel(char *file_path, int k, int rank, int size, int my_rows_numbe
         partial_grid[i] = rand_r(&seed)%2 * 255;
     }
 
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_init = omp_get_wtime() - t_init;
+            printf("i,%d,%d,%d,%lf\n", size, nthreads, k, t_init);
+        }
+
+    
+    double t_write;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0)t_write = omp_get_wtime();
     parallel_write(partial_grid, 255, file_path, k, my_rows_number, rank, size, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
+    if(rank==0){t_write = omp_get_wtime() - t_write;
+            printf("w,%d,%d,%d,%lf\n", size, nthreads, k, t_write);
+        }
+    
     free(partial_grid);
     return;
 }

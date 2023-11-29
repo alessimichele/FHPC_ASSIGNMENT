@@ -107,14 +107,9 @@ int main ( int argc, char **argv ){
     if (action == INIT){
 
         if(rank==0)printf("mode,size,nthreads,k,time\n");
-        double t_init;
-        MPI_Barrier(MPI_COMM_WORLD);
-        if(rank==0)t_init = omp_get_wtime();
         init_parallel(file_path, k, rank, size, my_rows_number);
         MPI_Barrier(MPI_COMM_WORLD);
-        if(rank==0){t_init = omp_get_wtime() - t_init;
-            printf("i,%d,%d,%d,%lf\n", size, nthreads, k, t_init);
-        }
+        
 
     }else{  
 
