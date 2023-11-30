@@ -106,7 +106,7 @@ int main ( int argc, char **argv ){
 
     if (action == INIT){
 
-        if(rank==0)printf("mode,size,nthreads,k,time\n");
+        //if(rank==0)printf("mode,size,nthreads,k,time\n");
         init_parallel(file_path, k, rank, size, my_rows_number);
         MPI_Barrier(MPI_COMM_WORLD);
         
@@ -120,7 +120,7 @@ int main ( int argc, char **argv ){
     
         unsigned char *partial_grid;
         int maxval, xsize, ysize;
-        if(rank==0)printf("mode,size,nthreads,k,time\n");
+        //if(rank==0)printf("mode,size,nthreads,k,time\n");
         double t_read;
         if (rank==0)t_read = omp_get_wtime();
         parallel_read(&partial_grid, &maxval, &xsize, &ysize, file_path, my_rows_number, rank, size, comm); // !!!!!!
