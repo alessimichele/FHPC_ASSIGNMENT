@@ -1,0 +1,579 @@
+Loading mkl version 2022.2.1
+Loading tbb version 2021.7.1
+Loading compiler-rt version 2022.2.1
+gcc -DUSE_DOUBLE -DMKL gemm_parallel.c -m64 -I/opt/area/shared/programs/x86/oneAPI/2022.3.1/mkl/2022.2.1/include -L/opt/area/shared/programs/x86/oneAPI/2022.3.1/mkl/2022.2.1/lib/intel64  -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl  -o dgemm_mkl.x
+gcc -DUSE_DOUBLE -DOPENBLAS gemm_parallel.c -m64 -I/opt/programs/openBLAS/0.3.23-omp/include -L//opt/programs/openBLAS/0.3.23-omp/lib -lopenblas -lpthread -o dgemm_oblas.x -fopenmp
+gcc -DUSE_DOUBLE  -DBLIS gemm_parallel.c -m64 -I/u/dssc/mcarol00/blis/myblis/include/blis -L//u/dssc/mcarol00/blis/myblis/lib -o dgemm_blis.x -lpthread  -lblis -fopenmp -lm
+cc1: error: /u/dssc/mcarol00/blis/myblis/include/blis: Permission denied
+make: *** [Makefile:27: dgemm_blis.x] Error 1
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /orfeo/cephfs/home/dssc/malessi/FHPC_ASSIGNMENT/Exercise2/./fgemm_oblas.x: No such file or directory
+srun: error: epyc003: task 0: Exited with exit code 2
