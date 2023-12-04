@@ -4,6 +4,6 @@ This repository contains solutions to the exercises for the exam in Foundations 
 The assignments were done in collaboration with [@marcocarollo](https://github.com/marcocarollo).
 
 ## Structure of this repository
--  [Exercise1](#exercise1): folder containing the solution to the first exercise.
--  [Exercise2](#exercise2): folder containing the solution to the second exercise.
--  [report.pdf](#report): report containing a detailed description of the exercises and the results obtained.
+-  [Exercise1](./Exercise1): folder containing the solution to the first exercise.
+-  [Exercise2](./Exercise2): folder containing the solution to the second exercise.
+-  [report.pdf](./report.pdf): report containing a detailed description of the exercises and the results obtained.
