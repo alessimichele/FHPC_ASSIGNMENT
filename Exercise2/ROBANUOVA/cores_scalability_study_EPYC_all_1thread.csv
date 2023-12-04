@@ -1,2 +1,0 @@
-library,precision,n_threads,iteration,time,GFLOPS
-blis,d,1,1,blis,d,1,2,blis,d,1,3,blis,d,1,4,blis,d,1,5,mkl,d,1,1,mkl,d,1,2,mkl,d,1,3,mkl,d,1,4,mkl,d,1,5,oblas,d,1,1,oblas,d,1,2,oblas,d,1,3,oblas,d,1,4,oblas,d,1,5,
