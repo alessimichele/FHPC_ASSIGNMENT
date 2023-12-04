@@ -1,9 +1,7 @@
 # FHPC_ASSIGNMENT
 
-To DO:
-- mettere che in ordered "#pragam omp for ..." è sbagliato proprio dal punto di vista del risultato, perche l'aggiornamento non e seriale.
-- comunque vedere se mettere omp in modo giusto (cioe seriale con un thd dopo l altro) su ordered
+This repository contains solutions to the exercises for the exam in Foundations of High Performance Computing at Università degli Studi di Trieste
+The assignments were done in collaboration with [@marcocarollo](https://github.com/marcocarollo).
 
-
-- OpenMP su wave funziona, domani provo a mettere MPI.
-- dentro files, c'è delete_files.sh per eliminare gli snapshot... dentro ci sono le istruzioni di come farla andare
+## Structure of this repository
+-  [Exercise2](#exercise2) 
