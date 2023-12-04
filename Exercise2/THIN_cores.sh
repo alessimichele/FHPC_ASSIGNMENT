@@ -3,7 +3,7 @@
 #SBATCH --job-name=bliscore
 #SBATCH --nodes=1 
 #SBATCH --ntasks-per-node=1 
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=24
 #SBATCH --time=02:00:00 
 #SBATCH --exclusive
 #SBATCH --output=cores_thin_blis.out
@@ -28,7 +28,7 @@ for library in 'blis' #'mkl' 'blis' 'oblas'
 do
     for precision in 'f' 'd' # Single and double precision
     do
-        for n_threads in 1 2 4 6 8 10 12 14 16 18 20 22 24
+        for n_threads in 1 2 {4..24..4}
         do 
             for j in 1 2 3 4 5
             do
