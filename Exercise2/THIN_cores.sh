@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1 
 #SBATCH --cpus-per-task=4
 #SBATCH --time=02:00:00 
-##SBATCH --exclusive
+#SBATCH --exclusive
 #SBATCH --output=cores_thin_blis.out
 
 module load mkl
