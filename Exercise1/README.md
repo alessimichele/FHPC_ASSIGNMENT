@@ -16,7 +16,9 @@ Different evolution methods are implemented:
 - [`data`](./data/) folder: here are stored all the .csv files with the times obtained by running the code. The folder is subdivided according to the evolution methods used.
 - [`sbatch_files`](./sbatch_files/) folder: here are stored the .sh files used to run and time the code on the cluster.
 - [`files`](./files/) folder: here are stored the .pgm files with the snapshots of the playgrounds. The folder is subdivided according to the evolution methods used, plus a folder for the initial playgrounds: `init`.
-[comment]: <> (- [`old_versions`](./old_versions/) folder: here are stored various attempts in tackling the problem that didn't make it to the final implementation.)
+<!--- 
+[`old_versions`](./old_versions/) folder: here are stored various attempts in tackling the problem that didn't make it to the final implementation.)
+-->
 ## How to compile and run the code
 To compile the code simply run:
 ```
