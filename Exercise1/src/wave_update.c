@@ -46,7 +46,7 @@ int map_even_grid(int rand_cell_idx, int k){
     if (k%2 !=0 ){
         perror("Something went wrong, this function should be called only when k is even.\n");
     }
-    if (rand_cell_idx%k < 2){
+    if (rand_cell_idx%k < k/2){
         return (rand_cell_idx+ ((k/2) *k))%(k*k) + k/2;
     }else{
         return (rand_cell_idx+ ((k/2) *k))%(k*k) - k/2;
