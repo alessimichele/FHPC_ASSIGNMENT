@@ -1,5 +1,5 @@
 
-[!](./files/bichitos.gif)
+![](./files/bichitos.gif)
 
 # Exercise 1
 This folder contains code and data for the first assignment. Further info can be found [here](https://github.com/Foundations-of-HPC/Foundations_of_HPC_2022/blob/main/Assignment/exercise1/Assignment_exercise1.pdf).\
