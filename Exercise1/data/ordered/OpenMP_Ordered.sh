@@ -1,0 +1,58 @@
+#!/bin/bash
+#SBATCH --partition=EPYC 
+#SBATCH --job-name=OO
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=2 
+#SBATCH --cpus-per-task=64
+#SBATCH --mem=200gb 
+#SBATCH --time=02:00:00 
+#SBATCH --exclusive
+#SBATCH --output=OpenMP_Ordered.out
+
+
+module load openMPI/4.1.5/gnu
+
+MAPBY=node
+BINDTO=socket
+export OMP_PLACES=cores
+export OMP_PROC_BIND=close
+
+
+
+echo $name
+
+n=100
+
+name=OpenMP_Ordered.csv
+mode=ordered
+res=data/$mode/$name.csv
+
+
+if [ "$mode" == "static" ]
+then
+    e=1
+elif [ "$mode" == "ordered" ]
+then
+    e=0
+elif [ "$mode" == "wave" ]
+then
+    e=2
+else
+    echo "Error: mode not recognized"
+    exit 1
+fi
+
+for k in 10000 
+do
+    formatted_number=$(printf "%05d" "$k")
+    filename="init_"$formatted_number".pgm" 
+    for nthreads in 1 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64
+    do
+        export OMP_NUM_THREADS=$nthreads
+        for count in {1..3..1}
+        do
+            mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ./main.x -r -k $k -n $n -e $e -f $filename >> $res
+        done
+    done
+done
+
