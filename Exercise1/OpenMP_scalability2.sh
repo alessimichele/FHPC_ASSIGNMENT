@@ -25,7 +25,7 @@ n=100
 
 for mode in static wave ordered
 do
-    res=data/$mode/$name.csv
+    res=../data/$mode/$name.csv
     if [ "$(ls -A data/$mode/)" ]; then
         truncate -s 0 $res
     else
@@ -56,7 +56,7 @@ do
                 export OMP_NUM_THREADS=$nthreads
                 for count in {1..5..1}
                 do
-                    mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ./main.x -r -k $k -n $n -e $e -f $filename >> $res
+                    mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ../main.x -r -k $k -n $n -e $e -f $filename >> $res
                 done
             done
         done
@@ -69,7 +69,7 @@ do
             export OMP_NUM_THREADS=$nthreads
             for count in {1..5..1}
             do
-                mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ./main.x -r -k $k -n $n -e $e -f $filename >> $res
+                mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ../main.x -r -k $k -n $n -e $e -f $filename >> $res
             done
         done
     fi
