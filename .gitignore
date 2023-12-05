@@ -17,4 +17,5 @@
 *.DS_store
 
 # debugging folder
-./valgrind/
+./Exercise1/valgrind/
+./Exercise1/old_versions/
