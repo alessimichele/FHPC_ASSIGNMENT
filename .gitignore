@@ -8,7 +8,7 @@
 *.out
 
 # File used to obtains plot
-.vscode
+.vscode/
 
 # Analysis files #
 *.ipynb
