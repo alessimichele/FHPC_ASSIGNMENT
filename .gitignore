@@ -10,5 +10,11 @@
 # File used to obtains plot
 .vscode/
 
-## Analysis files ##
+# Analysis files #
 *.ipynb
+
+# macOS generated files
+*.DS_store
+
+# debugging folder
+./valgrind/
