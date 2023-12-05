@@ -2,9 +2,9 @@
 This folder contains code and data for the first assignment. Further info can be found [here](https://github.com/Foundations-of-HPC/Foundations_of_HPC_2022/blob/main/Assignment/exercise1/Assignment_exercise1.pdf).\
 The goal of the exercise is to implement a parallel version of a variant of the [Conway’s “Game of Life”](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).\
 Different evolution methods are implemented:
-- Static Evolution
-- Ordered Evolution
-- Wave Evolution
+- Static evolution
+- Ordered evolution
+- Wave evolution
 
 ## Structure of the repository
 - `src` folder: here you can find the code for the different evolution methods we implemented. Additionally functions for the initialization of the playground are provided:
@@ -16,7 +16,7 @@ Different evolution methods are implemented:
 - [`data`](./data/) folder: here are stored all the .csv files with the times obtained by running the code. The folder is subdivided according to the evolution methods used.
 - [`sbatch_files`](./sbatch_files/) folder: here are stored the .sh files used to run and time the code on the cluster.
 - [`files`](./files/) folder: here are stored the .pgm files with the snapshots of the playgrounds. The folder is subdivided according to the evolution methods used, plus a folder for the initial playgrounds: `init`.
-- [`old_versions`](./old_versions/) folder: here are stored various attempts in tackling the problem that didn't make it to the final implementation.
+[comment]: <> (- [`old_versions`](./old_versions/) folder: here are stored various attempts in tackling the problem that didn't make it to the final implementation.)
 ## How to compile and run the code
 To compile the code simply run:
 ```
