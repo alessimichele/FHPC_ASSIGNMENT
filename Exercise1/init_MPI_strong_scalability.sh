@@ -21,7 +21,7 @@ echo $name
 
 mode=init
 
-res=data/$mode/$name.csv
+res=../data/$mode/$name.csv
 
 echo "mode,size,nthreads,k,time" > $res
 
@@ -33,7 +33,7 @@ do
     do
         for rep in {1..5..1}
         do
-            mpirun -n $nprocs --map-by $MAPBY ./main.x -i -k $k -f $filename >> $res
+            mpirun -n $nprocs --map-by $MAPBY ../main.x -i -k $k -f $filename >> $res
         done
     done
 done
