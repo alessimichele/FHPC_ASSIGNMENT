@@ -21,7 +21,7 @@ echo $name
 
 mode=init
 
-res=data/$mode/$name.csv
+res=../data/$mode/$name.csv
 
 echo "mode,size,nthreads,k,time" > $res
 
@@ -34,7 +34,7 @@ do
         export OMP_NUM_THREADS=$nthreads
         for rep in {1..5..1}
         do
-            mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ./main.x -i -k $k -f $filename >> $res
+            mpirun -n 4 --map-by $MAPBY --bind-to $BINDTO ../main.x -i -k $k -f $filename >> $res
         done
     done
 done
