@@ -1,3 +1,6 @@
+
+![](./files/bichitos.gif)
+
 # Exercise 1
 This folder contains code and data for the first assignment. Further info can be found [here](https://github.com/Foundations-of-HPC/Foundations_of_HPC_2022/blob/main/Assignment/exercise1/Assignment_exercise1.pdf).\
 The goal of the exercise is to implement a parallel version of a variant of the [Conway’s “Game of Life”](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).\
