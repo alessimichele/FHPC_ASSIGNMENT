@@ -13,8 +13,12 @@ Different evolution methods are implemented:
   - [Wave evolution](./src/wave_update.c)
   - [Initializing, reading and writing in parallel](./src/io_init.c)
 
-- [`data`](./data/) folder: here are stored all the .csv files with the times obtained by running the code. The folder is subdivided according to the evolution methods used.
-- [`sbatch_files`](./sbatch_files/) folder: here are stored the .sh files used to run and time the code on the cluster.
+- [`data`](./data/) folder: this directory is structured as follows.
+  - [utils.py](./data/utils.py) a `.py` module containing a python class and pipeline to perform data analysis.
+  - [`init`](./data/init): contains sbatch `.sh` files, notebook script for data analysis `.ipynb` and output data in `.csv` format.
+  - [`static`](./data/static): contains sbatch `.sh` files, notebook script for data analysis `.ipynb` and output data in `.csv` format.
+  - [`ordered`](./data/ordered): contains sbatch `.sh` files, notebook script for data analysis `.ipynb` and output data in `.csv` format.
+  - [`wave`](./data/wave): contains sbatch `.sh` files, notebook script for data analysis `.ipynb` and output data in `.csv` format.
 - [`files`](./files/) folder: here are stored the .pgm files with the snapshots of the playgrounds. The folder is subdivided according to the evolution methods used, plus a folder for the initial playgrounds: `init`.
 <!--- 
 [`old_versions`](./old_versions/) folder: here are stored various attempts in tackling the problem that didn't make it to the final implementation.)
