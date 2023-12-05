@@ -7,13 +7,15 @@ Different evolution methods are implemented:
 - Wave Evolution
 
 ## Structure of the repository
-In the `src` folder you can find the code for the different evolution methods we implemented. Additionally functions for the initialization of the playground are provided:
-- [Static evolution](./src/static_update.c)
-- [Ordered evolution](./src/ordered_update.c)
-- [Wave evolution](./src/wave_update.c)
-- [Initializing, reading and writing in parallel](./src/io_init.c)
+- In the `src` folder you can find the code for the different evolution methods we implemented. Additionally functions for the initialization of the playground are provided:
+  - [Static evolution](./src/static_update.c)
+  - [Ordered evolution](./src/ordered_update.c)
+  - [Wave evolution](./src/wave_update.c)
+  - [Initializing, reading and writing in parallel](./src/io_init.c)
 
-In the `data` folder are stored all the .csv files with the times obtained by running the code. The folder is subdivided according to the evolution methods used.
+- In the `data` folder are stored all the .csv files with the times obtained by running the code. The folder is subdivided according to the evolution methods used.
+- In the `sbatch_files` folder are stored the .sh files used to run and time the code on the cluster.
+- In the `files` folder are stored the .pgm files with the snapshots of the playgrounds. The folder is subdivided according to the evolution methods used, plus a folder for the initial playgrounds: `init`. 
 ## How to compile and run the code
 To compile the code simply run:
 ```
@@ -34,5 +36,3 @@ To run the code use `mpirun` with the following arguments:
 - -f *string*: if used with -i, it is the name of the file where the initial playground is saved. If used with -r, it is the name of the file where the initial playground is read from.
 - -n *int value*: number of steps to be calculated
 - -s *int value*:every how many steps a dump of the system is saved on a file (0 meaning only at the end). This will be saved in the folder `files/` inside with name of the form *snapshot_nnnnn.pgm*, where *nnnnn* is the step at which the image is captured padded with zeros to obtain 5 digits.
-
-All the images will be stored in the `files` folder. The generated playgrounds will be stored in `images/init`, while the generated snapshots will be saved in the folder `images/<evolution_method>`-
