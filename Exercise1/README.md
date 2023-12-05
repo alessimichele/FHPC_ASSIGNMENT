@@ -7,7 +7,7 @@ Different evolution methods are implemented:
 - Wave evolution
 
 ## Structure of the repository
-- `src` folder: here you can find the code for the different evolution methods we implemented. Additionally functions for the initialization of the playground are provided:
+- [`src`](./src/) folder: here you can find the code for the different evolution methods we implemented. Additionally functions for the initialization of the playground are provided:
   - [Static evolution](./src/static_update.c)
   - [Ordered evolution](./src/ordered_update.c)
   - [Wave evolution](./src/wave_update.c)
