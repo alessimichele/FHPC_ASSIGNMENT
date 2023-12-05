@@ -22,7 +22,7 @@ n=100
 
 for mode in static wave ordered
 do
-    res=data/$mode/$name.csv
+    res=../data/$mode/$name.csv
     if [ "$(ls -A data/$mode/)" ]; then
         truncate -s 0 $res
     else
@@ -52,7 +52,7 @@ do
             do
                 for rep in {1..5..1}
                 do
-                    mpirun -n $nprocs --map-by $MAPBY ./main.x -r -k $k -n $n -e $e -f $filename >> $res
+                    mpirun -n $nprocs --map-by $MAPBY ../main.x -r -k $k -n $n -e $e -f $filename >> $res
                 done
             done
         done
@@ -64,7 +64,7 @@ do
         do
             for rep in {1..5..1}
             do
-                mpirun -n $nprocs --map-by $MAPBY ./main.x -r -k $k -n $n -e $e -f $filename >> $res
+                mpirun -n $nprocs --map-by $MAPBY ../main.x -r -k $k -n $n -e $e -f $filename >> $res
             done
         done
     fi
